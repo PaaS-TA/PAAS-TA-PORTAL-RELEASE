@@ -1,0 +1,7 @@
+---
+name: paas-ta-portal-storage-api
+
+dependencies: []
+
+files:
+- paas-ta-portal-storage-api/paas-ta-portal-storage-api.jar

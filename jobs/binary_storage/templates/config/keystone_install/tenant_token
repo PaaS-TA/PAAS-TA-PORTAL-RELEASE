@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+python -c \
+    "import sys; import json; output = json.loads(' '.join(sys.argv[1:])); print(output['access']['token']['id'])" \
+`curl -s -d '{"auth":{"passwordCredentials":{"username": "admin", "password": "secret"},"tenantName":"demo"}}' \
+    -H "Content-type: application/json" \
+    http://localhost:5000/v2.0/tokens`

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+CONFIG_ADMIN_PORT=`./config_admin_port`
+echo http://localhost:$CONFIG_ADMIN_PORT/v2.0

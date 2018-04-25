@@ -1,0 +1,28 @@
+# abort script on any command that exits with a non zero value
+set -e
+
+pkg_name="jdk1.8.0_121"
+
+# CHECK OS
+if [[ `uname -a` =~ "x86_64" ]] ; then
+  archive="java/server-jre-8u121-linux-x64.tar.gz"
+else
+  echo "Only 64-bit architectures are supported."
+  exit 1
+fi
+
+# UNPRESS ARCHIVE
+if [[ -f $archive ]] ; then
+  tar xzf $archive
+else
+  echo "Archive not found"
+  exit 1
+fi
+
+# COPY ARCHIVE
+if [[ -d $pkg_name/bin && `$pkg_name/bin/java -version 2>&1` =~ "Java HotSpot" && $? == 0 ]]; then
+  cp -a $pkg_name/* ${BOSH_INSTALL_TARGET}
+else
+  echo "JVM is not properly packaged"
+  exit 1
+fi

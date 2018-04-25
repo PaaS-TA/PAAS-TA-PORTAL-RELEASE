@@ -1,0 +1,23 @@
+check process proxy-server
+  with pidfile /var/vcap/sys/run/swift/proxy-server.pid
+  start program "/var/vcap/jobs/binary_storage/bin/swift_ctl start proxy-server 0" with timeout 20 seconds
+  stop program "/var/vcap/jobs/binary_storage/bin/swift_ctl stop proxy-server 0" with timeout 20 seconds
+  group vcap
+
+check process account-server/1
+  with pidfile /var/vcap/sys/run/swift/account-server/1.pid
+  start program "/var/vcap/jobs/binary_storage/bin/swift_ctl start account-server 1" with timeout 20 seconds
+  stop program "/var/vcap/jobs/binary_storage/bin/swift_ctl stop account-server 1" with timeout 20 seconds
+  group vcap
+
+check process container-server/1
+  with pidfile /var/vcap/sys/run/swift/container-server/1.pid
+  start program "/var/vcap/jobs/binary_storage/bin/swift_ctl start container-server 1" with timeout 20 seconds
+  stop program "/var/vcap/jobs/binary_storage/bin/swift_ctl stop container-server 1" with timeout 20 seconds
+  group vcap
+
+check process object-server/1
+  with pidfile /var/vcap/sys/run/swift/object-server/1.pid
+  start program "/var/vcap/jobs/binary_storage/bin/swift_ctl start object-server 1" with timeout 20 seconds
+  stop program "/var/vcap/jobs/binary_storage/bin/swift_ctl stop object-server 1" with timeout 20 seconds
+  group vcap

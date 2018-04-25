@@ -1,0 +1,27 @@
+---
+name: paas-ta-portal-common-api
+
+templates:
+  bin/service_ctl.erb: bin/service_ctl
+  bin/monit_debugger: bin/monit_debugger
+  data/properties.sh: data/properties.sh
+  data/bootstrap.yml.erb: data/bootstrap.yml
+  helpers/ctl_setup.sh: helpers/ctl_setup.sh
+  helpers/ctl_utils.sh: helpers/ctl_utils.sh
+packages:
+  - java
+  - paas-ta-portal-common-api
+properties:
+  commonapi.port:
+    description: 'common api server port num'
+    default: '2223'
+  commonapi.java_opts:
+    description: 'commonapi boot service option'
+    default: '-XX:MaxMetaspaceSize=104857K -Xss349K -Xms681574K -XX:MetaspaceSize=104857K -Xmx681574K'
+  configserver.url:
+    description: 'config server ip and port'
+    default: 'localhost'
+  eurekaserver.url:
+    description: 'eureka server ip and port'
+    default: 'localhost'
+

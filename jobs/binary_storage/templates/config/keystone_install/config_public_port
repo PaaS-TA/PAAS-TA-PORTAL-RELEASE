@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+KEYSTONE_CONF=${KEYSTONE_CONF:-/etc/keystone/keystone.conf}
+
+# Extract some info from Keystone's configuration file
+if [[ -r "$KEYSTONE_CONF" ]]; then
+    CONFIG_PUBLIC_PORT=$(sed 's/[[:space:]]//g' $KEYSTONE_CONF | grep public_port= | cut -d'=' -f2)
+fi
+
+echo $CONFIG_PUBLIC_PORT

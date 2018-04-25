@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+CONFIG_ADMIN_PORT=`./config_admin_port`
+CONFIG_PUBLIC_PORT=`./config_public_port`
+
+echo "===========Keystone Middleware setting for this deployment=============" >> $1
+
+echo "[ Keystone Auth ]" >> $1
+echo "operator_roles : admin, swiftoperator, _member_" >> $1
+echo "reseller_prefix : KEY_" >> $1
+echo "reseller_admin_role : ResellerAdmin" >> $1
+echo
+echo "[Keystone Auth Token Support]" >> $1
+echo "auth_admin_prefix : (leave blank)" >> $1
+echo "auth_host : \$IP_OF_KEYSTONE_HOST" >> $1
+echo "auth_port : $CONFIG_ADMIN_PORT" >> $1
+echo "auth_protocol : http" >> $1
+echo "auth_uri : http://\$KEYSTONE_IP:$CONFIG_PUBLIC_PORT/" >> $1
+echo "admin_user : swift" >> $1
+echo "admin_password : password" >> $1
+echo "admin_tenant_name : service" >> $1
+echo "signing_dir : /var/cache/swift" >> $1
+echo "include_service_catalog : False" >> $1

@@ -1,0 +1,7 @@
+---
+name: paas-ta-portal-webuser
+
+dependencies: []
+
+files:
+- paas-ta-portal-webuser/paas-ta-portal-webuser.war

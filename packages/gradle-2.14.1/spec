@@ -1,0 +1,5 @@
+---
+name: gradle-2.14.1
+dependencies: [] # no compile dependencies
+files:
+- gradle/gradle-2.14.1-bin.zip

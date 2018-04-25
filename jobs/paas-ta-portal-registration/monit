@@ -1,0 +1,6 @@
+check process paas-ta-portal-registration
+  with pidfile /var/vcap/sys/run/paas-ta-portal-registration/paas-ta-portal-registration.pid
+  start program "/var/vcap/jobs/paas-ta-portal-registration/bin/monit_debugger service_ctl '/var/vcap/jobs/paas-ta-portal-registration/bin/service_ctl start'"
+  stop program "/var/vcap/jobs/paas-ta-portal-registration/bin/monit_debugger service_ctl '/var/vcap/jobs/paas-ta-portal-registration/bin/service_ctl stop'"
+  group vcap
+

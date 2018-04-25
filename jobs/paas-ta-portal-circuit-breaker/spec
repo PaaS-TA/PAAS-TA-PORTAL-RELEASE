@@ -1,0 +1,26 @@
+---
+name: paas-ta-portal-circuit-breaker
+
+templates:
+  bin/service_ctl.erb: bin/service_ctl
+  bin/monit_debugger: bin/monit_debugger
+  data/properties.sh: data/properties.sh
+  data/bootstrap.yml.erb: data/bootstrap.yml
+  helpers/ctl_setup.sh: helpers/ctl_setup.sh
+  helpers/ctl_utils.sh: helpers/ctl_utils.sh
+packages:
+  - java
+  - paas-ta-portal-circuit-breaker
+properties:
+  circuitserver.port:
+    description: 'circuitser port num'
+    default: '2224'
+  circuitserver.java_opts:
+    description: 'circuitserver boot service option'
+    default: '-XX:MaxMetaspaceSize=104857K -Xss349K -Xms681574K -XX:MetaspaceSize=104857K -Xmx681574K'
+  configserver.url:
+    description: 'config server ip and port'
+    default: 'localhost'
+  eurekaserver.url:
+    description: 'eureka server ip and port'
+    default: 'localhost'

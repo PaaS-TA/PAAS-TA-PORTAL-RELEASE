@@ -1,0 +1,23 @@
+# abort script on any command that exits with a non zero value
+set -e
+
+PACKAGE_NAME=swift-all-in-one
+
+#deb files
+tar xzf $PACKAGE_NAME/$PACKAGE_NAME-deb.tar.gz
+mkdir ${BOSH_INSTALL_TARGET}/deb-files
+cp -r ${BOSH_COMPILE_TARGET}/saio-deb-files ${BOSH_INSTALL_TARGET}/deb-files/
+
+#whl files
+tar xpf $PACKAGE_NAME/$PACKAGE_NAME-whl.tar.gz
+mkdir ${BOSH_INSTALL_TARGET}/whl-files
+cp -r ${BOSH_COMPILE_TARGET}/python-swiftclient ${BOSH_INSTALL_TARGET}/whl-files/
+cp -r ${BOSH_COMPILE_TARGET}/openstack-swift ${BOSH_INSTALL_TARGET}/whl-files/
+
+#swift 2.2.0
+tar xzf $PACKAGE_NAME/swift-2.2.0.tar.gz
+cp -r ${BOSH_COMPILE_TARGET}/swift-2.2.0 ${BOSH_INSTALL_TARGET}/
+
+#swift on file 2.5.9
+#tar xzf $PACKAGE_NAME/swiftonfile-2.5.0.tar.gz
+#cp -r ${BOSH_COMPILE_TARGET}/swiftonfile-2.5.0 ${BOSH_INSTALL_TARGET}/

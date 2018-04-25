@@ -1,0 +1,7 @@
+---
+name: paas-ta-portal-registration
+
+dependencies: []
+
+files:
+- paas-ta-portal-registration/paas-ta-portal-registration.jar

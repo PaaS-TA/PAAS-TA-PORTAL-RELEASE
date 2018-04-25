@@ -1,0 +1,8 @@
+---
+name: paas-ta-portal-gateway
+
+dependencies: []
+
+files:
+- paas-ta-portal-gateway/paas-ta-portal-gateway.jar
+

@@ -1,0 +1,8 @@
+---
+name: paas-ta-portal-common-api
+
+dependencies: []
+
+files:
+- paas-ta-portal-common-api/paas-ta-portal-common-api.jar
+

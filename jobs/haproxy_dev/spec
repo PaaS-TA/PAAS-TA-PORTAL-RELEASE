@@ -1,0 +1,50 @@
+---
+name: haproxy_dev
+templates:
+  bin/haproxy_ctl.erb: bin/haproxy_ctl
+  bin/pre-start: bin/pre-start
+  config/haproxy/haproxy.cfg.erb: config/haproxy/haproxy.cfg
+  data/properties.sh.erb: data/properties.sh
+  helper/ctl_utils.sh: helper/ctl_utils.sh
+  helper/ctl_setup.sh: helper/ctl_setup.sh
+  helper/monit_debugger: helper/monit_debugger
+
+packages:
+  - java
+  - haproxy
+
+properties:
+  haproxy.host_ip:
+    description: Haproxy host ip
+    default: 115.68.46.190
+  haproxy.http_port:
+    description: Haproxy http port
+    default: 8080
+  infradmin.ip:
+    description:
+  infradmin.hport:
+    description:
+  eurekaserver.ip:
+    description:
+  eurekaserver.hport:
+    description:
+  circuitserver.ip:
+    description:
+  circuitserver.hport:
+    description:
+  gatewayserver.ip:
+    description:
+  gatewayserver.hport:
+    description:
+  portalapi.ip:
+    description:
+  portalapi.hport:
+    description:
+  commonapi.ip:
+    description:
+  commonapi.hport:
+    description:
+  storageapi.ip:
+    description:
+  storageapi.hport:
+    description:

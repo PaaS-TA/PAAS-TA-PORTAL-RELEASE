@@ -1,0 +1,5 @@
+check process paas-ta-portal-circuit-breaker
+  with pidfile /var/vcap/sys/run/paas-ta-portal-circuit-breaker/paas-ta-portal-circuit-breaker.pid
+  start program "/var/vcap/jobs/paas-ta-portal-circuit-breaker/bin/monit_debugger service_ctl '/var/vcap/jobs/paas-ta-portal-circuit-breaker/bin/service_ctl start'"
+  stop program "/var/vcap/jobs/paas-ta-portal-circuit-breaker/bin/monit_debugger service_ctl '/var/vcap/jobs/paas-ta-portal-circuit-breaker/bin/service_ctl stop'"
+  group vcap

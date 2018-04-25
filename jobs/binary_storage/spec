@@ -1,0 +1,56 @@
+---
+name: binary_storage
+
+templates:
+  bin/install.sh.erb: bin/pre-start
+  bin/swift_ctl: bin/swift_ctl
+
+  helper/install_deb.sh.erb: helper/install_deb.sh
+  helper/swift_set_up.sh.erb: helper/swift_set_up.sh
+  helper/monit_debugger: helper/monit_debugger
+
+  config/keystone_install/keystone_install.sh.erb: helper/keystone_install/keystone_install.sh
+  config/keystone_install/config_admin_port: helper/keystone_install/config_admin_port
+  config/keystone_install/config_public_port: helper/keystone_install/config_public_port
+  config/keystone_install/config_service_token: helper/keystone_install/config_service_token
+  config/keystone_install/keystone.conf-init: helper/keystone_install/keystone.conf-init
+  config/keystone_install/keystone_middleware_settings: helper/keystone_install/keystone_middleware_settings
+  config/keystone_install/keystone-init.d: helper/keystone_install/keystone-init.d
+  config/keystone_install/service_endpoint: helper/keystone_install/service_endpoint
+  config/keystone_install/tenant_token: helper/keystone_install/tenant_token
+  config/keystone_install/default_keystone_config.sh: helper/keystone_install/default_keystone_config.sh
+
+  config/keystone/etc/default_catalog.templates: config/keystone/etc/default_catalog.templates
+  config/keystone/etc/keystone.conf.sample: config/keystone/etc/keystone.conf.sample
+  config/keystone/etc/keystone-paste.ini: config/keystone/etc/keystone-paste.ini
+  config/keystone/etc/logging.conf.sample: config/keystone/etc/logging.conf.sample
+  config/keystone/etc/policy.json: config/keystone/etc/policy.json
+  config/keystone/etc/policy.v3cloudsample.json: config/keystone/etc/policy.v3cloudsample.json
+  config/keystone/etc/sso_callback_template.html: config/keystone/etc/sso_callback_template.html
+
+packages:
+  - python
+  - swift-all-in-one
+
+properties:
+  binary_storage.proxy_ip:
+    description: 'swift proxy ip address'
+  binary_storage.proxy_port:
+    description: 'swift proxy port'
+  binary_storage.default_username:
+    description: 'keystone default username'
+  binary_storage.default_password:
+    description: 'password for keystone default user'
+  binary_storage.default_tenantname:
+    description: 'keystone default tenant'
+  binary_storage.default_email:
+    description: 'keystone default user emaili'
+  binary_storage.auth_port:
+    description: 'keystone auth port'
+  mariadb.host:
+    description: 'mariadb host'
+  mariadb.port:
+    description: 'mariadb port'
+  mariadb.admin_user.password:
+    description: MariaDB admin user password
+    default: admin

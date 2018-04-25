@@ -1,0 +1,25 @@
+# abort script on any command that exits with a non zero value
+set -e
+
+archive="haproxy/haproxy-1.6.5.tar.gz"
+pkg_name="haproxy-1.6.5"
+ 
+#UNPRESS ARCHIVE
+if [[ -f $archive ]] ; then
+  tar xzf $archive
+else
+  echo "Archive not found"
+  exit 1
+fi
+ 
+#INSTALL & COPY ARCHIVE
+if [[ -d $pkg_name/src ]]; then
+    cd $pkg_name
+    make TARGET=linux2628
+  make install
+  cp -a ../$pkg_name/* ${BOSH_INSTALL_TARGET}
+  chmod 755 ${BOSH_INSTALL_TARGET}/*
+else
+  echo "HAPROXY is not properly packaged"
+  exit 1
+fi 

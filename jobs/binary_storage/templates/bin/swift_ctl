@@ -1,0 +1,31 @@
+#!/bin/bash
+
+export PATH=/usr/local/bin
+
+case $1 in
+
+  start)
+    echo "start"
+
+    swift-init $2 --config-num=$3 start -r /var/vcap/sys/run/swift
+
+    RETVAL=$?
+
+    [ $RETVAL -ne 0 ] && exit $RETVAL
+
+    ;;
+
+  stop)
+
+    echo "stop"
+
+    swift-init $2 --config-num=$3 stop -r /var/vcap/sys/run/swift
+
+    ;;
+
+  *)
+    echo "Usage: account-server-1_ctl {start|stop}"
+ 
+   ;;
+
+esac

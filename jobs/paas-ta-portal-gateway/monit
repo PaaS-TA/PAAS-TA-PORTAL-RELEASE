@@ -1,0 +1,5 @@
+check process paas-ta-portal-gateway
+  with pidfile /var/vcap/sys/run/paas-ta-portal-gateway/paas-ta-portal-gateway.pid
+  start program "/var/vcap/jobs/paas-ta-portal-gateway/bin/monit_debugger service_ctl '/var/vcap/jobs/paas-ta-portal-gateway/bin/service_ctl start'"
+  stop program "/var/vcap/jobs/paas-ta-portal-gateway/bin/monit_debugger service_ctl '/var/vcap/jobs/paas-ta-portal-gateway/bin/service_ctl stop'"
+  group vcap

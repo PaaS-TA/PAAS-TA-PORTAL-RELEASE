@@ -1,0 +1,8 @@
+---
+name: paas-ta-portal-infra-admin
+
+dependencies: []
+
+files:
+- paas-ta-portal-infra-admin/paas-ta-portal-infra-admin.jar
+

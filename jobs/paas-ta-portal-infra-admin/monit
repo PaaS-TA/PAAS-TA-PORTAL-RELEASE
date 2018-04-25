@@ -1,0 +1,5 @@
+check process paas-ta-portal-infra-admin
+  with pidfile /var/vcap/sys/run/paas-ta-portal-infra-admin/paas-ta-portal-infra-admin.pid
+  start program "/var/vcap/jobs/paas-ta-portal-infra-admin/bin/monit_debugger service_ctl '/var/vcap/jobs/paas-ta-portal-infra-admin/bin/service_ctl start'"
+  stop program "/var/vcap/jobs/paas-ta-portal-infra-admin/bin/monit_debugger service_ctl '/var/vcap/jobs/paas-ta-portal-infra-admin/bin/service_ctl stop'"
+  group vcap

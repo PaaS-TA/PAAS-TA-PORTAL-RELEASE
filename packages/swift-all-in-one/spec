@@ -1,0 +1,10 @@
+---
+name: swift-all-in-one
+
+dependencies:
+
+files:
+  - swift-all-in-one/swift-all-in-one-deb.tar.gz
+  - swift-all-in-one/swift-all-in-one-whl.tar.gz
+  - swift-all-in-one/swift-2.2.0.tar.gz
+  - swift-all-in-one/swiftonfile-2.5.0.tar.gz

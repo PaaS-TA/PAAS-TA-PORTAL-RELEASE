@@ -1,0 +1,13 @@
+# abort script on any command that exits with a non zero value
+set -e
+
+SRC_NAME=postgresql-9.6.5-1
+
+# Extract postgres package
+echo "Extracting postgres ${SRC_NAME}-linux-x64-binaries.tar.gz..."
+
+tar xzvf ${BOSH_COMPILE_TARGET}/postgres/$SRC_NAME-linux-x64-binaries.tar.gz
+
+# Copy postgres package
+echo "Copying postgres ${SRC_NAME}..."
+cp -a ${BOSH_COMPILE_TARGET}/pgsql/* ${BOSH_INSTALL_TARGET}

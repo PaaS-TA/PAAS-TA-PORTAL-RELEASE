@@ -1,0 +1,4 @@
+# abort script on any command that exits with a non zero value
+set -e
+tar xzf tomcat/apache-tomcat-8.5.15.tar.gz
+cp -r apache-tomcat-8.5.15/*  ${BOSH_INSTALL_TARGET}
