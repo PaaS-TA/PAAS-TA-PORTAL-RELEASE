@@ -10,19 +10,18 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# ignore output and build directories 
+# ignore output and build directories
 build/**
 bin/**
 out/**
 .idea/**
 
 # Package Files #
-*.jar
-*.war
 *.ear
 *.zip
 *.tar.gz
 *.rar
+*.tgz
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
