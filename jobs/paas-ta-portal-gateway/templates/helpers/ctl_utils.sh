@@ -1,3 +1,5 @@
+# Helper functions used by ctl scripts
+
 # links a job file (probably a config file) into a package
 # Example usage:
 # link_job_file_to_package config/redis.yml [config/redis.yml]
@@ -98,7 +100,6 @@ wait_pid() {
   fi
 }
 
-
 wait_pidfile() {
   pidfile=$1
   try_kill=$2
@@ -120,7 +121,6 @@ wait_pidfile() {
     echo "Pidfile $pidfile doesn't exist"
   fi
 }
-
 
 kill_and_wait() {
   pidfile=$1
@@ -154,4 +154,3 @@ check_nfs_mount() {
     fi
   fi
 }
-

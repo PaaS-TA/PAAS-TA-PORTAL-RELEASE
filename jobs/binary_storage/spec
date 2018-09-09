@@ -37,13 +37,15 @@ properties:
     description: 'swift proxy ip address'
   binary_storage.proxy_port:
     description: 'swift proxy port'
-  binary_storage.default_username:
+  binary_storage.username:
     description: 'keystone default username'
-  binary_storage.default_password:
+  binary_storage.password:
     description: 'password for keystone default user'
-  binary_storage.default_tenantname:
+  binary_storage.tenantname:
     description: 'keystone default tenant'
-  binary_storage.default_email:
+  binary_storage.email:
+    description: 'keystone default user emaili'
+  binary_storage.binary_desc:
     description: 'keystone default user emaili'
   binary_storage.auth_port:
     description: 'keystone auth port'

@@ -1,5 +1,5 @@
-#!/bin/bash
-#USAGE monit_debugger <label> command to run
+#!/bin/sh
+# USAGE monit_debugger <label> command to run
 mkdir -p /var/vcap/sys/log/monit
 {
   echo "MONIT-DEBUG date"
@@ -11,4 +11,3 @@ mkdir -p /var/vcap/sys/log/monit
   R=$?
   echo "MONIT-DEBUG exit code $R"
 } >/var/vcap/sys/log/monit/monit_debugger.$1.log 2>&1
-

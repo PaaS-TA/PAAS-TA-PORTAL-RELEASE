@@ -1,3 +1,139 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:23d4c6f9714b5a66ce4441ce1a1f1ef7ce5cc44ebf37c3ae47b850f84fc323d8
-size 4887
+#!/usr/bin/env bash
+
+set -e
+
+JOB_NAME=binary_storage
+KEYSTONE_CONF_DIR=/var/vcap/jobs/$JOB_NAME/helper/keystone_install
+
+mkdir -p /etc/keystone
+cd /etc/keystone
+cp /var/vcap/jobs/$JOB_NAME/config/keystone/etc/* /etc/keystone/
+rename -f 's/\.sample//' /etc/keystone/*.sample
+
+#Configuration Section
+sed -e 's/# admin_token = ADMIN/admin_token = ADMIN/' -i /etc/keystone/keystone.conf
+sed -e 's/# connection = sqlite:\/\/\/keystone.db/connection = mysql:\/\/keystone:swiftstack@<%= p("mariadb.host") %>:<%= p("mariadb.port") %>\/keystone/' -i /etc/keystone/keystone.conf
+sed -e 's/# driver = keystone.token.backends.sql.Token/driver = keystone.token.backends.sql.Token/g' -i /etc/keystone/keystone.conf
+sed -e 's/# provider =/provider = keystone.token.providers.uuid.Provider/g' -i /etc/keystone/keystone.conf
+sed -e 's/# public_port = 5000/public_port = <%= p("binary_storage.auth_port") %>/g' -i /etc/keystone/keystone.conf
+
+sed 's/ec2_extension user_crud_extension/ec2_extension s3_extension user_crud_extension/' -i /etc/keystone/keystone-paste.ini
+
+#enable logs
+sed -e 's/# debug = False/debug = True/g' -i keystone.conf
+sed -e 's/# verbose = False/verbose = True/g' -i keystone.conf
+sed -e 's/# log_file = keystone.log/log_file = keystone.log/g' -i keystone.conf
+sed -e 's/# log_dir = \/var\/log\/keystone/log_dir = \/var\/vcap\/store\/log\/keystone/g' -i keystone.conf
+
+#Create log folder
+mkdir -p /var/vcap/store/log/keystone
+
+#Populate Data into keystone DB
+keystone-manage db_sync
+sleep 5
+chown -R keystone:keystone /var/vcap/store/log/keystone
+
+cd $KEYSTONE_CONF_DIR ; cp keystone-init.d /etc/init.d/keystone ; cp keystone.conf-init /etc/init/keystone.conf
+
+# service start script
+service keystone restart
+sleep 3
+
+################################################
+
+cd $KEYSTONE_CONF_DIR
+
+chmod +x config_admin_port
+chmod +x config_public_port
+chmod +x config_service_token
+chmod +x service_endpoint
+chmod +x tenant_token
+chmod +x keystone_middleware_settings
+
+###### Inject Sample Data ######
+CONTROLLER_PUBLIC_ADDRESS=${CONTROLLER_PUBLIC_ADDRESS:-localhost}
+CONTROLLER_ADMIN_ADDRESS=${CONTROLLER_ADMIN_ADDRESS:-localhost}
+CONTROLLER_INTERNAL_ADDRESS=${CONTROLLER_INTERNAL_ADDRESS:-localhost}
+
+#TOOLS_DIR=$(cd $(dirname "$0") && pwd)
+export SERVICE_TOKEN=`./config_service_token`
+CONFIG_ADMIN_PORT=`./config_admin_port`
+CONFIG_PUBLIC_PORT=`./config_public_port`
+export SERVICE_ENDPOINT=`./service_endpoint`
+
+function get_id () {
+    echo `"$@" | grep ' id ' | awk '{print $4}'`
+}
+echo "===================================ENV VAR============================"
+
+#
+# Default tenant
+#
+DEMO_TENANT=$(get_id keystone tenant-create --name=demo \
+                                            --description "Default Tenant")
+
+ADMIN_USER=$(get_id keystone user-create --name=admin \
+                                         --pass=secret)
+
+ADMIN_ROLE=$(get_id keystone role-create --name=admin)
+
+keystone user-role-add --user-id $ADMIN_USER \
+                       --role-id $ADMIN_ROLE \
+                       --tenant-id $DEMO_TENANT
+
+#
+# Service tenant
+#
+SERVICE_TENANT=$(get_id keystone tenant-create --name=service \
+                                               --description "Service Tenant")
+
+SWIFT_USER=$(get_id keystone user-create --name=swift \
+                                         --pass=password \
+                                         --tenant-id $SERVICE_TENANT)
+
+keystone user-role-add --user-id $SWIFT_USER \
+                       --role-id $ADMIN_ROLE \
+                       --tenant-id $SERVICE_TENANT
+
+
+#
+# Keystone service
+#
+KEYSTONE_SERVICE=$(get_id \
+keystone service-create --name=keystone \
+                        --type=identity \
+                        --description="Keystone Identity Service")
+if [[ -z "$DISABLE_ENDPOINTS" ]]; then
+    keystone endpoint-create --region RegionOne --service-id $KEYSTONE_SERVICE \
+        --publicurl "http://$CONTROLLER_PUBLIC_ADDRESS:$CONFIG_PUBLIC_PORT/v2.0" \
+        --adminurl "http://$CONTROLLER_ADMIN_ADDRESS:$CONFIG_ADMIN_PORT/v2.0" \
+        --internalurl "http://$CONTROLLER_INTERNAL_ADDRESS:$CONFIG_PUBLIC_PORT/v2.0"
+fi
+
+#
+# default swift service / user
+#
+#if [[ -n $1 ]];
+#then
+#    ./default_keystone_config.sh $1
+#else
+#    echo "To install a default swift service and user, run ./default_keystone_config.sh"
+#fi
+
+RESULT=/var/vcap/jobs/$JOB_NAME/config/keystone/keystone_install_result.txt
+./keystone_middleware_settings $RESULT
+
+echo "========== DB information ==========" >> $RESULT
+echo "user : root" >> $RESULT
+echo "password : admin" >> $RESULT
+echo "" >> $RESULT
+echo "" >> $RESULT
+echo "========== Service Information =========" >> $RESULT
+echo "Service Token: $SERVICE_TOKEN" >> $RESULT
+echo "Service Endpoint: $SERVICE_ENDPOINT" >> $RESULT
+TENANT_TOKEN=`./tenant_token`
+echo "Tenant Token: $TENANT_TOKEN" >> $RESULT
+echo "" >> $RESULT
+echo "" >> $RESULT
+echo "=====Done=====" >> $RESULT
+

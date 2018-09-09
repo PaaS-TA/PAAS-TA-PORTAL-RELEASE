@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7e421c46b8deefb52355b3b5847d72681ae9cf76aa9b0be613dd71094a95c579
-size 880
+#!/bin/bash
+
+package=$1
+package_path='/var/vcap/packages/'$package
+
+find $package_path/deb-files/saio-deb-files -name '*.deb' -exec basename {} \; > $package_path/deb-files/install_file_list.txt
+
+files=($(cat $package_path/deb-files/install_file_list.txt))
+
+cp $package_path/deb-files/install_file_list.txt $package_path/deb-files/not_installed.txt
+
+for i in ${!files[*]} ; do
+  not_installed=($(cat $package_path/deb-files/not_installed.txt))
+  if [ ${#not_installed[@]} -eq 0 ] ; then
+    echo "package install SUCCESS"
+    break
+  else
+    for k in ${!not_installed[*]} ; do
+      dpkg -i $package_path/deb-files/saio-deb-files/${not_installed[$k]}
+      
+      # installed
+      if [ $? -eq 0 ] ; then
+        sed -i '/'${not_installed[$k]}'/d' $package_path/deb-files/not_installed.txt
+      # failed
+      else
+        echo 'dependency problems'
+      fi
+    done
+  fi
+done

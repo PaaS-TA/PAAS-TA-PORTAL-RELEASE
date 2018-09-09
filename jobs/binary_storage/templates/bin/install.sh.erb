@@ -1,3 +1,97 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:39d9aef244d4049da1f5d31eaec220af5abfabab0bd906270789c0ab3620f973
-size 4636
+#!/bin/bash
+
+set -e
+
+DATA_DIR=/var/vcap/store/srv
+
+if [ ! -d "$DATA_DIR" ]; then
+
+  JOB_NAME=binary_storage
+  JOB_DIR=/var/vcap/jobs/$JOB_NAME
+  WHEEL_DIR=/var/vcap/packages/swift-all-in-one/whl-files
+  SWIFT_PKG_DIR=/var/vcap/packages/swift-all-in-one/swift-2.2.0
+
+  sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password <%= p("mariadb.admin_user.password") %>'
+  sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password <%= p("mariadb.admin_user.password") %>'
+
+  # log dir chmod
+  chmod 771 /var/log
+
+  # install deb files
+  # bash $JOB_DIR/helper/install_deb.sh gluster-client
+  bash $JOB_DIR/helper/install_deb.sh swift-all-in-one
+
+  # install python-swiftclient and dependencies
+  pip install --no-index --find-links=$WHEEL_DIR/python-swiftclient python-swiftclient
+
+  # insatll openstack-swift dependencies
+  pip install --no-index --find-links=$WHEEL_DIR/openstack-swift -r $SWIFT_PKG_DIR/requirements.txt
+  pip install --no-index --find-links=$WHEEL_DIR/openstack-swift pbr
+
+  # install openstack-swift
+  cd $SWIFT_PKG_DIR
+  python setup.py develop
+
+  # swift setup
+  bash $JOB_DIR/helper/swift_set_up.sh
+
+  # install keystone
+  bash $JOB_DIR/helper/keystone_install/keystone_install.sh <%= p("binary_storage.proxy_ip") %>:<%= p("binary_storage.proxy_port") %>
+  sleep 7
+  # swift proxy setting
+  sed -e 's/bind_ip = 127.0.0.1/bind_ip = 0.0.0.0/' -i /etc/swift/proxy-server.conf
+  sed -e 's/bind_port = 8080/bind_port = <%=p('binary_storage.proxy_port')%>/' -i /etc/swift/proxy-server.conf
+  sed -e 's/pipeline = catch_errors gatekeeper healthcheck proxy-logging cache bulk tempurl slo dlo ratelimit crossdomain tempauth staticweb container-quotas account-quotas proxy-logging proxy-server/pipeline = catch_errors gatekeeper healthcheck proxy-logging cache bulk tempurl slo dlo ratelimit crossdomain authtoken staticweb container-quotas account-quotas proxy-logging proxy-server/' -i /etc/swift/proxy-server.conf
+
+  echo "" >> /etc/swift/proxy-server.conf
+  echo "[filter:authtoken]" >> /etc/swift/proxy-server.conf
+  echo "paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory" >> /etc/swift/proxy-server.conf
+  echo "delay_auth_decision = true" >> /etc/swift/proxy-server.conf
+  echo "" >> /etc/swift/proxy-server.conf
+  echo "auth_protocol = http" >> /etc/swift/proxy-server.conf
+  echo "auth_host = <%= p("binary_storage.proxy_ip") %>" >> /etc/swift/proxy-server.conf
+  echo "auth_port = <%=p('binary_storage.auth_port')%>" >> /etc/swift/proxy-server.conf
+  echo "admin_token = ADMIN" >> /etc/swift/proxy-server.conf
+  echo "" >> /etc/swift/proxy-server.conf
+  echo "admin_tenant_name = service" >> /etc/swift/proxy-server.conf
+  echo "admin_user = swift" >> /etc/swift/proxy-server.conf
+  echo "admin_password = password" >> /etc/swift/proxy-server.conf
+
+  export PATH=$PATH:/usr/local/bin
+
+#  sed '/602/d' -i /home/vcap/bin/remakerings
+#  sed '/603/d' -i /home/vcap/bin/remakerings
+#  sed '/604/d' -i /home/vcap/bin/remakerings
+
+#  bash /home/vcap/bin/remakerings
+#  sleep 5
+  swift-init main restart
+  service keystone restart
+  sleep 5
+
+# keystone service, tenant, user create
+  export OS_AUTH_URL=http://<%= p("binary_storage.proxy_ip") %>:<%=p('binary_storage.auth_port')%>/v2.0
+  export OS_SERVICE_TOKEN=ADMIN
+  export OS_USERNAME=swift
+  export OS_PASSWORD=password
+  export OS_SERVICE_ENDPOINT=http://<%= p("binary_storage.proxy_ip") %>:35357/v2.0
+  export OS_TENAN_NAME=service
+
+  keystone service-create --name=swift --type="object-store" --description="Swift Service"
+
+  <% p('binary_storage.tenantname').each_with_index do | tenantname, index| %>
+  keystone tenant-create --name <%= tenantname %> --description "<%= p("binary_storage.binary_desc")[index]%>" --enabled true
+  keystone user-create --name <%= p("binary_storage.username")[index]%> --pass <%= p("binary_storage.password")[index]%> --tenant-id <%= tenantname %> --email <%= p("binary_storage.email")[index]%> --enabled true
+
+  <% end %>
+
+  SERVICE_ID=`keystone service-list | grep ' swift ' | awk '{print $2}'`
+  keystone endpoint-create --service-id $SERVICE_ID --publicurl "http://<%= p("binary_storage.proxy_ip") %>:<%= p("binary_storage.proxy_port") %>/v1/KEY_\$(tenant_id)s" --adminurl "http://<%= p("binary_storage.proxy_ip") %>/v1" --internalurl "http://<%= p("binary_storage.proxy_ip") %>/v1/KEY_\$(tenant_id)s" --region Public
+
+  keystone endpoint-create --service-id $SERVICE_ID --publicurl "http://localhost:<%= p("binary_storage.proxy_port") %>/v1/KEY_\$(tenant_id)s" --adminurl "http://localhost/v1" --internalurl "http://localhost/v1/KEY_\$(tenant_id)s" --region Local
+
+
+  swift-init main stop
+  sleep 3
+
+fi

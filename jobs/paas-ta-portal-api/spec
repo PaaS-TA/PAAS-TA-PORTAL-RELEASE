@@ -5,22 +5,69 @@ templates:
   bin/service_ctl.erb: bin/service_ctl
   bin/monit_debugger: bin/monit_debugger
   data/properties.sh: data/properties.sh
-  data/bootstrap.yml.erb: data/bootstrap.yml
+  data/application.yml.erb: data/application.yml
   helpers/ctl_setup.sh: helpers/ctl_setup.sh
   helpers/ctl_utils.sh: helpers/ctl_utils.sh
 packages:
   - java
   - paas-ta-portal-api
 properties:
-  portalapi.port:
-    description: 'portalapi port num'
+  java_opts:
+    description: 'Luncher Java option'
+    default: '-Xms512m -Xmx1024m -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof'
+  infra.admin.enable:
+    description: 'Change it to true only if an infra-admin has been created.'
+    default: false
+  server.port:
+    description: 'Enter the Service Port'
     default: '2222'
-  portalapi.java_opts:
-    description: 'portalapi boot service option'
-    default: '-XX:MaxMetaspaceSize=104857K -Xss349K -Xms681574K -XX:MetaspaceSize=104857K -Xmx681574K'
-  configserver.url:
-    description: 'config server ip and port'
-    default: 'localhost'
-  eurekaserver.url:
-    description: 'eureka server ip and port'
-    default: 'localhost'
+  cloudfoundry.cc.api.url:
+    description: 'Please enter the cloud foundry api url.'
+  cloudfoundry.cc.api.uaaUrl:
+    description: 'Please enter the cloud foundry uaa url.'
+  cloudfoundry.cc.api.sslSkipValidation:
+    description: 'Change to true if cloud foundry api uses ssl.'
+    default: true
+  cloudfoundry.user.admin.username:
+    description: 'Please enter the cloud foundry administrator account.'
+  cloudfoundry.user.admin.password:
+    description: 'Please enter the cloud foundry administrator account password'
+  cloudfoundry.user.uaaClient.clientId:
+    description: 'uaa Enter the client with login authority.'
+    default: true
+  cloudfoundry.user.uaaClient.clientSecret:
+    description: 'uaa Enter the client secret with login privileges.'
+    default: true
+  cloudfoundry.user.uaaClient.adminClientId:
+    description: 'Enter the uaa admin client.'
+    default: true
+  cloudfoundry.user.uaaClient.adminClientSecret:
+    description: 'Enter the uaa admin client secret.'
+    default: true
+  cloudfoundry.user.uaaClient.loginClientId:
+    description: 'Enter the uaa login client secret.'
+    default: true
+  cloudfoundry.user.uaaClient.loginClientSecret:
+    description: 'Enter the uaa login client secret.'
+    default: true
+  cloudfoundry.user.uaaClient.skipSSLValidation:
+    description: 'Change to true if uaa api uses ssl.'
+    default: true
+  cloudfoundry.authorization:
+    default: 'cf-Authorization'
+  abacus.url:
+    description: 'Please enter the abacus api url.'
+    default: 'http://localthost'
+  monitoring.api.url:
+    description: 'Please enter the monitoring api url.'
+    default: 'http://localthost'
+  eureka.client.serviceUrl.defaultZone:
+    description: 'Please enter the paas-ta-portal-registration url.'
+  eureka.client.serviceUrl.port:
+    default: '2221'
+    description: 'Please enter the paas-ta-portal-registration port.'
+  paasta.api.portal.zuul.url:
+    description: 'Please enter the paas-ta-portal-gatway-api url.'
+  paasta.api.portal.zuul.port:
+    default: '2225'
+    description: 'Please enter the paas-ta-portal-gatway-api port.'

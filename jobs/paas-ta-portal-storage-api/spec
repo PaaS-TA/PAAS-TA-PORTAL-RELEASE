@@ -5,22 +5,44 @@ templates:
   bin/service_ctl.erb: bin/service_ctl
   bin/monit_debugger: bin/monit_debugger
   data/properties.sh: data/properties.sh
-  data/bootstrap.yml.erb: data/bootstrap.yml
+  data/application.yml.erb: data/application.yml
   helpers/ctl_setup.sh: helpers/ctl_setup.sh
   helpers/ctl_utils.sh: helpers/ctl_utils.sh
 packages:
   - java
   - paas-ta-portal-storage-api
 properties:
-  storageapi.port:
-    description: 'storageapi server port num'
+  java_opts:
+    description: 'Luncher Java option'
+    default: '-Xms512m -Xmx1024m -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof'
+  infra.admin.enable:
+    description: 'Change it to true only if an infra-admin has been created.'
+    default: false
+  server.port:
+    description: 'Enter the Service Port'
     default: '2226'
-  storageapi.java_opts:
-    description: 'storageapi boot service option'
-    default: '-XX:MaxMetaspaceSize=104857K -Xss349K -Xms681574K -XX:MetaspaceSize=104857K -Xmx681574K'
-  configserver.url:
-    description: 'config server ip and port'
-    default: 'localhost'
-  eurekaserver.url:
-    description: 'eureka server ip and port'
-    default: 'localhost'
+  objectStorage.swift.tenantName:
+    description: 'Enter the tenant name'
+    default: 'paasta-portal'
+  objectStorage.swift.username:
+    description: 'Enter the username'
+    default: 'paasta-portal'
+  objectStorage.swift.password:
+    description: 'Enter the password'
+    default: 'paasta'
+  objectStorage.swift.authUrl:
+    description: 'Enter the auth url'
+  objectStorage.swift.authMethod:
+    description: 'Enter the auth method'
+    default: 'keystone'
+  objectStorage.swift.preferredRegion:
+    description: 'Enter the preferred region'
+    default: 'Public'
+  objectStorage.swift.container:
+    description: 'Enter the container'
+    default: 'portal-container'
+  eureka.client.serviceUrl.defaultZone:
+    description: 'Please enter the paas-ta-portal-registration url.'
+  eureka.client.serviceUrl.port:
+    default: '2221'
+    description: 'Please enter the paas-ta-portal-registration port.'

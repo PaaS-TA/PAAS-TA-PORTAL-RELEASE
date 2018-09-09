@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Setup env vars and folders for the ctl script
 # This helps keep the ctl script as readable
 # as possible
 
@@ -41,6 +42,7 @@ do
 done
 
 # Setup log, run and tmp folders
+
 export RUN_DIR=/var/vcap/sys/run/$JOB_NAME
 export LOG_DIR=/var/vcap/sys/log/$JOB_NAME
 export TMP_DIR=/var/vcap/sys/tmp/$JOB_NAME
@@ -53,23 +55,24 @@ do
 done
 export TMPDIR=$TMP_DIR
 
-if [[ -d /var/vcap/packages/java ]]
+export C_INCLUDE_PATH=/var/vcap/packages/mysqlclient/include/mysql:/var/vcap/packages/sqlite/include:/var/vcap/packages/libpq/include
+export LIBRARY_PATH=/var/vcap/packages/mysqlclient/lib/mysql:/var/vcap/packages/sqlite/lib:/var/vcap/packages/libpq/lib
+
+# consistent place for vendoring python libraries within package
+if [[ -d ${WEBAPP_DIR:-/xxxx} ]]
 then
-  export JAVA_HOME="/var/vcap/packages/java"
+  export PYTHONPATH=$WEBAPP_DIR/vendor/lib/python
 fi
 
-# setup CLASSPATH for all jars/ folders within packages
-#export CLASSPATH=${CLASSPATH:-''} # default to empty
-#for java_jar in $(ls -d /var/vcap/packages/*/*/*.jar)
-#do
-#  export CLASSPATH=${java_jar}:$CLASSPATH
-#done
 
-PIDFILE=$RUN_DIR/$JOB_NAME.pid
+PIDFILE=/var/vcap/packages/apache2/logs/httpd.pid
+
+
+#기존 JOB RUN_DIR을 삭제한다.
+rm -r $RUN_DIR
+#아파치의 PID 파일을 링크로 연결한다. 아파치는 PID파일을 자체적으로 생성한다.
+ln -s /var/vcap/packages/apache2/logs/ $RUN_DIR
+
+
 
 echo '$PATH' $PATH
-
-
-chown vcap:vcap ${JOB_DIR}/data
-chmod 755 ${JOB_DIR}/data
-

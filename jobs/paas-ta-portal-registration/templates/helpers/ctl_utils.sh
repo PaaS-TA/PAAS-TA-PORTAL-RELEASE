@@ -1,3 +1,5 @@
+# Helper functions used by ctl scripts
+
 # links a job file (probably a config file) into a package
 # Example usage:
 # link_job_file_to_package config/redis.yml [config/redis.yml]

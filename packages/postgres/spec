@@ -1,7 +1,0 @@
----
-name: postgres
-
-dependencies: [] # no compile dependencies
-
-files:
-  - postgres/postgresql-9.6.5-1-linux-x64-binaries.tar.gz

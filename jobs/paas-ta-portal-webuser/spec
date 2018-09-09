@@ -1,27 +1,48 @@
 ---
 name: paas-ta-portal-webuser
+packages: 
+  - apache2
+  - paas-ta-portal-webuser
 
 templates:
-  bin/service_ctl.erb: bin/service_ctl
+  bin/httpd_ctl: bin/httpd_ctl
+  bin/pre_start.erb: bin/pre_start
   bin/monit_debugger: bin/monit_debugger
-  data/properties.sh: data/properties.sh
-  data/bootstrap.yml.erb: data/bootstrap.yml
+  data/properties.sh.erb: data/properties.sh
   helpers/ctl_setup.sh: helpers/ctl_setup.sh
   helpers/ctl_utils.sh: helpers/ctl_utils.sh
-packages:
-  - java
-  - paas-ta-portal-webuser
+  config/httpd.conf.erb: config/httpd.conf
+  config/config.json.erb: config/config.json
 properties:
-  webuser.port:
-    description: 'webuser server port num'
-    default: '8080'
-  webuser.java_opts:
-    description: 'webuser boot service option'
-    default: '-XX:MaxMetaspaceSize=104857K -Xss349K -Xms681574K -XX:MetaspaceSize=104857K -Xmx681574K'
-  configserver.url:
-    description: 'config server ip and port'
-    default: 'localhost'
-  eurekaserver.url:
-    description: 'eureka server ip and port'
-    default: 'localhost'
-
+  logPath:
+    description: 'apache log path'
+    default: 'logs'
+  webDir:
+    description: 'web directory'
+    default: '/var/vcap/packages/apache2/htdocs'
+  server.port:
+    description: 'web port'
+    default: '80'
+  gatewayserver.ip:
+    description: 'gateway server ip'
+    default: 'http://localhost'
+  gatewayserver.port:
+    description: 'gateway server port'
+    default: '2225'
+  cf.uaa.url:
+    description: 'uaa server address'
+  cf.uaa.clientsecret:
+    description: 'portalclient secret'
+    default: 'clientsecret'
+  portallogapi.ip:
+    description: 'portalapi server ip'
+    default: 'http://localhost'
+  portallogapi.port:
+    description: 'portalapi server port'
+    default: '5555'
+  monitoring:
+    description: 'user-portal use monitoring view'
+  quantity:
+    description: 'user-portal use quantity view'
+  automaticApproval:
+    description: 'auto Approval'

@@ -5,23 +5,29 @@ templates:
   bin/service_ctl.erb: bin/service_ctl
   bin/monit_debugger: bin/monit_debugger
   data/properties.sh: data/properties.sh
-  data/bootstrap.yml.erb: data/bootstrap.yml
+  data/application.yml.erb: data/application.yml
   helpers/ctl_setup.sh: helpers/ctl_setup.sh
   helpers/ctl_utils.sh: helpers/ctl_utils.sh
 packages:
   - java
   - paas-ta-portal-webadmin
 properties:
-  webadmin.port:
-    description: 'webadmin server port num'
-    default: '2223'
-  webadmin.java_opts:
-    description: 'webadmin boot service option'
-    default: '-XX:MaxMetaspaceSize=104857K -Xss349K -Xms681574K -XX:MetaspaceSize=104857K -Xmx681574K'
-  configserver.url:
-    description: 'config server ip and port'
-    default: 'localhost'
-  eurekaserver.url:
-    description: 'eureka server ip and port'
-    default: 'localhost'
-
+  java_opts:
+    description: 'Luncher Java option'
+    default: '-Xms512m -Xmx1024m -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof'
+  infra.admin.enable:
+    description: 'Change it to true only if an infra-admin has been created.'
+    default: false
+  server.port:
+    description: 'Enter the Service Port'
+    default: '8090'
+  eureka.client.serviceUrl.defaultZone:
+    description: 'Please enter the paas-ta-portal-registration url.'
+  eureka.client.serviceUrl.port:
+    default: '2221'
+    description: 'Please enter the paas-ta-portal-registration port.'
+  paasta.api.portal.zuul.url:
+    description: 'Please enter the paas-ta-portal-gatway-api url.'
+  paasta.api.portal.zuul.port:
+    default: '2225'
+    description: 'Please enter the paas-ta-portal-gatway-api port.'

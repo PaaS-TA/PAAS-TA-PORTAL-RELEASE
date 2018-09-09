@@ -1,3 +1,51 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bd07bba3ab15385cc0e3ac5959fa49be05ae628b6cefc3fc84b61ba85175e316
-size 1820
+#!/bin/bash
+
+set -e
+
+mkdir /var/vcap/store/srv
+mkdir -p /var/vcap/store/srv/1/node/sdb1 
+#/var/vcap/store/srv/2/node/sdb2 /var/vcap/store/srv/3/node/sdb3 /var/vcap/store/srv/4/node/sdb4 /var/run/swift
+
+#chown -R vcap:vcap /var/vcap/store/mnt/*
+chown -R vcap:vcap /var/vcap/store/srv/*
+
+#chown swift:swift /var/run/swift
+#for x in {1..4}; do sudo chown -R swift:swift /var/vcap/store/srv/$x/; done
+
+mkdir -p /var/cache/swift 
+#/var/cache/swift2 /var/cache/swift3 /var/cache/swift4
+chown -R vcap:vcap /var/cache/swift*
+mkdir -p /var/run/swift
+chown -R vcap:vcap /var/run/swift
+mkdir /var/log/swift
+chown -R vcap:vcap /var/log/swift
+
+cp /var/vcap/packages/swift-all-in-one/swift-2.2.0/doc/saio/rsyncd.conf /etc/
+sed -i "s/<your-user-name>/vcap/" /etc/rsyncd.conf
+for x in {1..1}; do find /etc/rsyncd.conf | xargs sudo sed -i "s/\/srv\/$x\/node/\/var\/vcap\/store\/srv\/$x\/node/"; done
+sed -i "s/RSYNC_ENABLE=false/RSYNC_ENABLE=true/" /etc/default/rsync
+service rsync restart
+sleep 10
+
+
+cp -r /var/vcap/packages/swift-all-in-one/swift-2.2.0/doc/saio/swift /etc/swift
+find /etc/swift/ -name \*.conf | xargs sudo sed -i "s/<your-user-name>/vcap/"
+for x in {1..1}; do find /etc/swift/ -name \*.conf | xargs sudo sed -i "s/\/srv\/$x\/node/\/var\/vcap\/store\/srv\/$x\/node/"; done
+chown -R vcap:vcap /etc/swift/*
+
+
+mkdir -p /home/vcap/bin
+cp /var/vcap/packages/swift-all-in-one/swift-2.2.0/doc/saio/bin/* /home/vcap/bin
+chmod +x /home/vcap/bin/*
+
+export PATH=$PATH:/usr/local/bin
+
+sed '/602/d' -i /home/vcap/bin/remakerings
+sed '/603/d' -i /home/vcap/bin/remakerings
+sed '/604/d' -i /home/vcap/bin/remakerings
+
+bash /home/vcap/bin/remakerings
+swift-init main start
+
+#iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT --to <%= p("binary_storage.proxy_ip") %>:<%= p("binary_storage.proxy_port") %>
+#iptables-save

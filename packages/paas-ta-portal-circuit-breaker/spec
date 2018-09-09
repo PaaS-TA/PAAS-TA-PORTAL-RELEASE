@@ -1,8 +1,0 @@
----
-name: paas-ta-portal-circuit-breaker
-
-dependencies: []
-
-files:
-- paas-ta-portal-circuit-breaker/paas-ta-portal-circuit-breaker.jar
-
