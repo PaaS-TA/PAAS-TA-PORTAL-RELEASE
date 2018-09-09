@@ -1,0 +1,18 @@
+{
+  "clientId": "portalclient",
+  "clientSecret": "<%= p('cf.uaa.clientsecret')%>",
+  "redirectUri": "/callback",
+  "logoutredirectUri": "/login",
+  "scope": "openid cloud_controller_service_permissions.read cloud_controller.read cloud_controller.write",
+  "authUrl": "<%= p('cf.uaa.url')%>/oauth/authorize",
+  "checkUrl": "<%= p('cf.uaa.url')%>/check_token",
+  "accessUrl": "<%= p('cf.uaa.url')%>/oauth/token",
+  "infoUrl": "<%= p('cf.uaa.url')%>/userinfo",
+  "logoutUrl": "<%= p('cf.uaa.url')%>/logout",
+  "userinfoUrl": "/commonapi/v2/user",
+  "code": "code",
+  "sessionTimeout": "10",
+  "monitoring": <%= p('monitoring')%>,
+  "quantity": <%= p('quantity')%>,
+  "automaticApproval": <%= p('automaticApproval')%>
+}

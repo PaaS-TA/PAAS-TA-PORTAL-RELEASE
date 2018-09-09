@@ -1,0 +1,66 @@
+# Spring properties
+spring:
+  application:
+    name: PortalRegistration  # Identify this application
+<% if p("infra.admin.enable") %>
+  boot:
+    #Spring boot admin settings
+    admin:
+      routes:
+        endpoints: env,metrics,trace,info,trace,heapdump,hystrix.stream,docs
+        #Timeintervalin ms to update the status of App
+      monitor:
+        perio: 10000
+        #LifeTime of App status in ms.
+        status-lifetime: 10000
+        #Connection Timeout in ms when App's status and info
+        connect-timeout: 2000
+        #Read Timeout in ms when App's status and info
+        read-timeout: 5000
+      metadata-keys-to-sanitize: .password$,.*secret$,.*key$,.$token$,.credentials.,.*vcap_services$
+      metadata:
+        user:
+          name: ${security.user.name}
+          password: ${security.user.password}
+
+#INFRA_ADMIN Settings
+project:
+  name: paasta-registration
+  artifactId: paasta-registration
+  description: paasta eureka service
+info:
+  app:
+    encoding: Encoding - UTF-8
+  java:
+    source: Source - java ver
+    target: Instance1 - Java ver
+  spring:
+    profiles: ${spring.profiles.active:default}
+  build:
+    name: ${project.name}
+    artifact: ${project.artifactId}
+    description: ${project.description}
+<% end %>
+management:     # If you set off security...
+  security:
+    enabled: false
+
+# Configure this Discovery Server
+eureka:
+  server:
+    enableSelfPreservation: true
+  instance:
+    appname: ${spring.application.name}
+    hostname: ${spring.cloud.client.hostname}
+    preferIpAddress: true
+  client:  # Standalone mode (not a client, don't register with itself)
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:  # It must set variable server port when it registers itself
+      defaultZone: http://127.0.0.1:2221/eureka/
+    healthcheck:
+      enabled: true
+
+
+server:
+  port: <%= p('server.port')%>

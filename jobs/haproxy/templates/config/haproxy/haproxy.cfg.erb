@@ -1,0 +1,96 @@
+global
+daemon
+pidfile /var/vcap/sys/run/haproxy_dev/haproxy_dev.pid
+maxconn 100000
+
+defaults
+mode http
+timeout connect 5000ms
+timeout client 50000ms
+timeout server 50000ms
+stats enable
+stats uri /admin
+
+
+
+# domain in redirect setting - Start
+frontend http-in
+mode http
+bind *:80
+acl portalwebuser hdr_beg(host) -i portal-web-user.
+acl portalwebadmin hdr_beg(host) -i portal-web-admin.
+acl portalregistration hdr_beg(host) -i portal-registration.
+acl portalinfraadmin hdr_beg(host) -i portal-infra-admin.
+
+use_backend http_server if portalwebuser
+use_backend webadmin_servers if portalwebadmin
+use_backend infraadmin_servers if portalinfraadmin
+use_backend eurekaserver_server if portalregistration
+# domain in redirect setting - End
+
+backend http_server
+mode http
+server server-1 <%= p('webuser.ip') %>:<%= p('webuser.port') %>
+
+backend webadmin_servers
+mode http
+server server-1 <%= p('webadmin.ip') %>:<%= p('webadmin.port') %>
+
+backend infraadmin_servers
+mode http
+server server-1 <%= p('infradmin.ip') %>:<%= p('infradmin.port') %>
+
+backend eurekaserver_server
+mode http
+server server-1 <%= p('eurekaserver.ip') %>:<%= p('eurekaserver.port') %>
+
+
+
+
+frontend http-in-gatewayserver
+mode http
+bind *:<%= p('gatewayserver.port')%>
+default_backend gatewayserver_server
+
+backend gatewayserver_server
+mode http
+server server-1 <%= p('gatewayserver.ip') %>:<%= p('gatewayserver.port') %>
+
+
+
+
+# MARIA_DB
+listen mariadb-in
+bind *:<%= p('mariadb.port')%>
+mode tcp
+<% p('mariadb.haproxy.urls').each_with_index do |ip, index| %>
+  server server-<%= index %> <%= ip %>:<%= p('mariadb.port') %>
+<% end %>
+
+
+
+# IP:Port in redirect setting - Start
+
+
+frontend http-in-8080
+mode http
+bind *:8080
+default_backend http_server
+
+frontend http-in-webadmin
+mode http
+bind *:<%= p('webadmin.port')%>
+default_backend webadmin_servers
+
+frontend http-in-infraadmin
+mode http
+bind *:<%= p('infradmin.port')%>
+default_backend infraadmin_servers
+
+frontend http-in-eurekaserver
+mode http
+bind *:<%= p('eurekaserver.port')%>
+default_backend eurekaserver_server
+
+
+# IP:Port in redirect setting - End

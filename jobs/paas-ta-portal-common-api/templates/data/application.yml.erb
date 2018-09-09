@@ -1,0 +1,112 @@
+spring:
+  application:
+    name: PortalCommonApi
+  security:
+    username: admin
+    password: openpaasta
+<% if p("infra.admin.enable") %>
+  boot:
+    #Spring boot admin settings
+    admin:
+      routes:
+        endpoints: env,metrics,trace,info,trace,heapdump,hystrix.stream,docs,turbine
+        #Timeintervalin ms to update the status of App
+      monitor:
+        perio: 10000
+        #LifeTime of App status in ms.
+        status-lifetime: 10000
+        #Connection Timeout in ms when App's status and info
+        connect-timeout: 2000
+        #Read Timeout in ms when App's status and info
+        read-timeout: 5000
+      metadata-keys-to-sanitize: .password$,.*secret$,.*key$,.$token$,.credentials.,.*vcap_services$
+
+#INFRA_ADMIN Settings
+project:
+  name: paasta-common-api
+  artifactId: paasta-common-api
+  description: paasta-common-api management service
+info:
+  app:
+    encoding: Encoding - UTF-8
+  java:
+    source: Source - java ver
+    target: Instance1 - Java ver
+  spring:
+    profiles: ${spring.profiles.active:default}
+  build:
+    name: ${project.name}
+    artifact: ${project.artifactId}
+    description: ${project.description}
+<% end %>
+server:
+  port: <%= p('server.port')%>
+
+
+
+datasource:
+  cc:
+    driver-class-name: <%= p('datasource.cc.driver-class-name')%>
+    url: <%= p('datasource.cc.url')%>
+    username: <%= p('datasource.cc.username')%>
+    password: <%= p('datasource.cc.password')%>
+  portal:
+    driver-class-name: <%= p('datasource.portal.driver-class-name')%>
+    url: <%= p('datasource.portal.url')%>
+    username: <%= p('datasource.portal.username')%>
+    password: <%= p('datasource.portal.password')%>
+  uaa:
+    driver-class-name: <%= p('datasource.uaa.driver-class-name')%>
+    url: <%= p('datasource.uaa.url')%>
+    username: <%= p('datasource.uaa.username')%>
+    password: <%= p('datasource.uaa.password')%>
+jpa:
+  database: postgresql
+  show-sql: true
+  hibernate:
+    ddl-auto: none
+    naming:
+      strategy: org.hibernate.dialect.MySQL5Dialect
+  generate-ddl: false
+mail:
+  smtp:
+    host: <%= p('mail.smtp.host')%>
+    port: <%= p('mail.smtp.port')%>
+    username: <%= p('mail.smtp.username')%>
+    password: <%= p('mail.smtp.password')%>
+    useremail: <%= p('mail.smtp.useremail')%>
+    properties:
+      auth: <%= p('mail.smtp.properties.auth')%>
+      starttls:
+        enable: <%= p('mail.smtp.properties.starttls.enable')%>
+        required: <%= p('mail.smtp.properties.starttls.required')%>
+      maximumTotalQps: 90
+      authUrl: <%= p('mail.smtp.properties.authUrl')%>
+      charset: <%= p('mail.smtp.properties.charset')%>
+      subject: <%= p('mail.smtp.properties.subject')%>
+      createUrl: authcreate
+      expiredUrl: authreset
+      inviteUrl: inviteorg
+paasta:
+  portal:
+    api:
+      authorization:
+        base64: Basic YWRtaW46b3BlbnBhYXN0YQ==
+      zuulUrl:
+        cfapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/portalapi
+        commonapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/commonapi
+        storageapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/storageapi
+    storageapi:
+      type: swift
+
+
+# Discovery Server Access
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: <%= p('eureka.client.serviceUrl.defaultZone')%>:<%= p('eureka.client.serviceUrl.port')%>/eureka/
+      registry-fetch-interval-seconds: 5
+  instance:
+    hostname: ${spring.cloud.client.hostname}
+    lease-expiration-duration-in-seconds: 5
+    lease-renewal-interval-in-seconds: 10

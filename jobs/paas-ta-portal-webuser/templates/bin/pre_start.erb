@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+set -e
+set -u
+
+JOB_NAME=$1
+
+JOB_DIR="/var/vcap/jobs/${JOB_NAME}"
+JOB_CONFIG="${JOB_DIR}/config/httpd.conf"
+WEB_DIR="/var/vcap/packages/apache2/htdocs"
+#JOB_DIR ADD
+JOB_APPCONFIG="${JOB_DIR}/config/config.json"
+PKG_DIR="/var/vcap/packages"
+WEB_FILE="$PKG_DIR/$JOB_NAME/$JOB_NAME"
+
+cp -r ${JOB_CONFIG} ${JOB_DIR}/packages/apache2/conf/.
+
+
+if [ -f "$WEB_DIR/index.html" ]
+then
+  echo "found"
+  sudo rm -r $WEB_DIR/*
+else
+  echo "not found"
+fi
+
+DEL_PATH="$PKG_DIR/$JOB_NAME/$JOB_NAME"
+echo $DEL_PATH
+if [ -d $DEL_PATH ]
+then
+  echo fount
+  sudo rm -r $PKG_DIR/$JOB_NAME/$JOB_NAME
+else
+  echo "not found"
+fi
+
+
+tar xvf $PKG_DIR/$JOB_NAME/$JOB_NAME.tar.gz -C $PKG_DIR/$JOB_NAME
+
+
+MAIN_JS=$(find ${WEB_FILE} -type f -name main.*.js)
+PRE_APPCONFIG="${WEB_FILE}/assets/resources/env/config.json"
+
+PRE_FILTER=$(cat ${PRE_APPCONFIG} | tr -d '{'  |tr -d '\r\n' | tr -d '"' | sed -e 's/: /:\"/g' | sed -e 's/,  /\",/g' | sed -e 's/^ *//g' -e 's/ *$//g' | sed -e 's/}/"/g' | sed -e 's/"false"/!1/g' | sed -e 's/"true"/!0/g'| sed -e 's/\//\\\//g' )
+AFTER_FILTER=$(cat ${JOB_APPCONFIG} | tr -d '{'  |tr -d '\r\n' | tr -d '"' | sed -e 's/: /:\"/g' | sed -e 's/,  /\",/g' | sed -e 's/^ *//g' -e 's/ *$//g' | sed -e 's/}/"/g' | sed -e 's/"false"/!1/g' | sed -e 's/"true"/!0/g'| sed -e 's/\//\\\//g')
+
+CONFIG_CHANGE="'s/${PRE_FILTER}/${AFTER_FILTER}/g' ${MAIN_JS}"
+
+echo "sed -i ${CONFIG_CHANGE}"
+echo $CONFIG_CHANGE | xargs sed -i
+
+
+sudo cp -r $WEB_FILE/* $WEB_DIR/.

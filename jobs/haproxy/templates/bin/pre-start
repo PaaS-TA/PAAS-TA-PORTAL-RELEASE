@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+JOB_NAME=haproxy
+JOB_DIR=/var/vcap/jobs/$JOB_NAME
+
+# Make 'monit_debugger' execute
+if [[ -e $JOB_DIR/helper/monit_debugger ]]
+then
+  sudo chmod +x $JOB_DIR/helper/monit_debugger
+fi

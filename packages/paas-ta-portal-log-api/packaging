@@ -1,0 +1,9 @@
+# abort script on any command that exits with a non zero value
+set -e
+
+JAR_DIR_NAME=paas-ta-portal-log-api
+JAR_NAME=paas-ta-portal-log-api
+#JAR_VERSION=1.0
+
+cp $JAR_DIR_NAME/$JAR_NAME.jar ${BOSH_INSTALL_TARGET}
+

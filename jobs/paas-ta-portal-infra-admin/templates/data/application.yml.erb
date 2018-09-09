@@ -1,0 +1,59 @@
+# Spring properties
+spring:
+  application:
+    name: PortalInfraAdmin  # Identify this application
+  security:
+    username: admin
+    password: 'Paasta@2018'
+  boot:
+    #Spring boot admin settings
+    admin:
+      routes:
+        endpoints: env,metrics,trace,info,trace,heapdump,hystrix.stream,docs
+        #Timeintervalin ms to update the status of App
+      monitor:
+        perio: 10000
+        #LifeTime of App status in ms.
+        status-lifetime: 10000
+        #Connection Timeout in ms when App's status and info
+        connect-timeout: 2000
+        #Read Timeout in ms when App's status and info
+        read-timeout: 5000
+      metadata-keys-to-sanitize: .password$,.*secret$,.*key$,.$token$,.credentials.,.*vcap_services$
+      client:
+        metadata:
+          user.name: ${security.user.name}
+          user.password: ${security.user.password}
+##INFRA_ADMIN Settings
+project:
+  name: paasta-infra-admin
+  artifactId: paasta-infra-admin
+  description: paasta-infra-admin
+info:
+  app:
+    encoding: Encoding - UTF-8
+  java:
+    source: Source - java ver
+    target: Instance1 - Java ver
+  build:
+    name: ${project.name}
+    artifact: ${project.artifactId}
+    description: ${project.description}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: <%= p('eureka.client.serviceUrl.defaultZone')%>:<%= p('eureka.client.serviceUrl.port')%>/eureka/
+      registry-fetch-interval-seconds: 5
+  instance:
+    hostname: ${spring.cloud.client.hostname}
+    lease-expiration-duration-in-seconds: 5
+    lease-renewal-interval-in-seconds: 10
+
+management:     # If you set off security...
+  security:
+    enabled: false
+
+server:
+  port: <%= p('server.port')%>
+

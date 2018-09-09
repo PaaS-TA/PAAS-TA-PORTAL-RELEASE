@@ -1,0 +1,46 @@
+---
+name: haproxy
+templates:
+  bin/haproxy_ctl.erb: bin/haproxy_ctl
+  bin/pre-start: bin/pre-start
+  config/haproxy/haproxy.cfg.erb: config/haproxy/haproxy.cfg
+  data/properties.sh.erb: data/properties.sh
+  helper/ctl_utils.sh: helper/ctl_utils.sh
+  helper/ctl_setup.sh: helper/ctl_setup.sh
+  helper/monit_debugger: helper/monit_debugger
+
+packages:
+  - java
+  - haproxy
+
+properties:
+  infradmin.ip:
+    description: 'Ip used by haproxy on the infradmin host'
+    default: '10.30.90.53'
+  infradmin.port:
+    description: 'The port that the infraadmin host will use for haproxy'
+    default: '2227'
+  eurekaserver.ip:
+    description: 'Ip used by haproxy on the eurekaserver host'
+  eurekaserver.port:
+    default: '2221'
+    description: 'The port that the eurekaserver host will use for haproxy'
+  gatewayserver.ip:
+    description: 'Ip used by haproxy on the gatewayserver host'
+  gatewayserver.port:
+    default: '2227'
+    description: 'The port that the gatewayserver host will use for haproxy'
+  webuser.ip:
+    description: 'Ip used by haproxy on the webuser host'
+  webuser.port:
+    default: '80'
+    description: 'The port that the webuser host will use for haproxy'
+  webadmin.ip:
+    description: 'Ip used by haproxy on the webadmin host'
+  webadmin.port:
+    default: '8090'
+    description: 'The port that the webadmin host will use for haproxy'
+  mariadb.port:
+    description: 'MARIADB PORT'
+  mariadb.haproxy.urls:
+    description: 'MARIADB URLS'

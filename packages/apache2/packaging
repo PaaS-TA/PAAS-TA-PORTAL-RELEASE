@@ -1,0 +1,17 @@
+set -e # exit immediately if a simple command exits with a non-zero status
+set -u # report the usage of uninitialized variables
+
+# Available variables
+# $BOSH_COMPILE_TARGET - where this package & spec'd source files are available
+# $BOSH_INSTALL_TARGET - where you copy/install files to be included in package
+export HOME=/var/vcap
+
+tar xfv apache2/httpd-2.2.25.tar.gz
+cd httpd-2.2.25
+./configure --prefix=${BOSH_INSTALL_TARGET} --enable-mods-shared=all --enable-so --enable-rewrite --enable-proxy --enable-proxy-connect --enable-auth-digest --enable-proxy-wstunnel=shared
+make
+make install
+
+echo "ServerName localhost" >> ${BOSH_INSTALL_TARGET}/conf/httpd.conf
+
+

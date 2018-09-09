@@ -1,0 +1,116 @@
+# Spring properties
+spring:
+  application:
+    name: PortalApi  # Service registers under this name
+  security:
+    username: admin
+    password: openpaasta
+  flyway:
+    enabled: false
+<% if p("infra.admin.enable") %>
+  boot:
+    #Spring boot admin settings
+    admin:
+      routes:
+        endpoints: env,metrics,trace,info,trace,heapdump,hystrix.stream,docs,turbine
+        #Timeintervalin ms to update the status of App
+      monitor:
+        perio: 10000
+        #LifeTime of App status in ms.
+        status-lifetime: 10000
+        #Connection Timeout in ms when App's status and info
+        connect-timeout: 2000
+        #Read Timeout in ms when App's status and info
+        read-timeout: 5000
+      metadata-keys-to-sanitize: .password$,.*secret$,.*key$,.$token$,.credentials.,.*vcap_services$
+
+#INFRA_ADMIN Settings
+project:
+  name: paasta-api
+  artifactId: paasta-cf-api
+  description: paasta-cf-api management service
+info:
+  app:
+    encoding: Encoding - UTF-8
+  java:
+    source: Source - java ver
+    target: Instance1 - Java ver
+  spring:
+    profiles: ${spring.profiles.active:default}
+  build:
+    name: ${project.name}
+    artifact: ${project.artifactId}
+    description: ${project.description}
+<% end %>
+
+
+server:
+  port: <%= p('server.port')%>
+
+
+tailsocket:
+  port: 5555
+
+management:     # If you set off security...
+  security:
+    enabled: false
+
+# CloudFoundry API Url
+cloudfoundry:
+  cc:
+    api:
+      url: <%= p('cloudfoundry.cc.api.url')%>
+      uaaUrl: <%= p('cloudfoundry.cc.api.uaaUrl')%>
+      sslSkipValidation: <%= p('cloudfoundry.cc.api.sslSkipValidation')%>
+  # CloudFoundry Login information
+  user:
+    admin:
+      username: <%= p('cloudfoundry.user.admin.username')%>
+      password: <%= p('cloudfoundry.user.admin.password')%>
+    uaaClient:
+      clientId: <%= p('cloudfoundry.user.uaaClient.clientId')%>
+      clientSecret: <%= p('cloudfoundry.user.uaaClient.clientSecret')%>
+      adminClientId: <%= p('cloudfoundry.user.uaaClient.adminClientId')%>
+      adminClientSecret: <%= p('cloudfoundry.user.uaaClient.adminClientSecret')%>
+      loginClientId: <%= p('cloudfoundry.user.uaaClient.loginClientId')%>
+      loginClientSecret: <%= p('cloudfoundry.user.uaaClient.loginClientSecret')%>
+      skipSSLValidation: <%= p('cloudfoundry.user.uaaClient.skipSSLValidation')%>
+  authorization: <%= p('cloudfoundry.authorization')%>
+
+
+abacus:
+  url: <%= p('abacus.url')%>
+
+# 포탈 상세 모니터링
+monitoring:
+  api:
+    url: <%= p('monitoring.api.url')%>
+
+multipart:
+  maxFileSize: 1000Mb
+  maxRequestSize: 1000Mb
+
+
+
+paasta:
+  portal:
+    api:
+      authorization:
+        base64: Basic YWRtaW46b3BlbnBhYXN0YQ==
+      zuulUrl:
+        cfapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/portalapi
+        commonapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/commonapi
+        storageapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/storageapi
+    storageapi:
+      type: swift
+
+# Discovery Server Access
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: <%= p('eureka.client.serviceUrl.defaultZone')%>:<%= p('eureka.client.serviceUrl.port')%>/eureka/
+      registry-fetch-interval-seconds: 5
+  instance:
+    hostname: ${spring.cloud.client.hostname}
+    lease-expiration-duration-in-seconds: 5
+    lease-renewal-interval-in-seconds: 10

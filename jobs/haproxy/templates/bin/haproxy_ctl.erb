@@ -1,0 +1,51 @@
+#!/bin/bash
+ 
+set -e
+set -u
+ 
+#SET HELPER
+export JOB_NAME='haproxy'
+source /var/vcap/jobs/$JOB_NAME/helper/ctl_setup.sh $JOB_NAME
+export PID_FILE=$RUN_DIR/$JOB_NAME.pid
+ 
+case $1 in
+ 
+  start)
+    echo "Starting :: HAPROXY"
+    pid_guard $PID_FILE $JOB_NAME
+ 
+    #REGIST DEMON
+    if [ -f $PKG_DIR/haproxy/examples/haproxy.init ]; then
+      cp $PKG_DIR/haproxy/examples/haproxy.init /etc/init.d/haproxy
+      chmod 755 /etc/init.d/haproxy
+    else
+      echo "FAIL :: REGIST DEMON ..."
+      exit 1
+    fi
+ 
+    #COPY CONFIG
+    if [ ! -d /etc/haproxy ]; then
+      mkdir -p /etc/haproxy
+      cp -a $JOB_DIR/config/haproxy/* /etc/haproxy
+    fi
+ 
+    #START HAPROXY
+    if [ -f /etc/haproxy/haproxy.cfg ]; then
+      $PKG_DIR/haproxy/haproxy -f /etc/haproxy/haproxy.cfg -p /var/vcap/sys/run/$JOB_NAME/$JOB_NAME.pid -D >>$LOG_DIR/$JOB_NAME.stdout.log 2>>$LOG_DIR/$JOB_NAME.stderr.log &
+    else
+      echo "FAIL :: START HAPROXY ..."
+      exit 1
+    fi
+ 
+    echo "SUCCESS :: Starting :: haproxy"
+    ;;
+ 
+  stop)
+    echo "Stopping :: HAPROXY"
+    kill_and_wait $PID_FILE
+    ;;
+ 
+  *)
+    echo "Usage: $0 {start|stop}" ;;
+ 
+esac

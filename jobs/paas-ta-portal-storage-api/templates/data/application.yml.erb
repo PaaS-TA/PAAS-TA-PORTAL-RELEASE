@@ -1,0 +1,88 @@
+spring:
+  application:
+      name: PortalStorageApi
+  security:
+    username: admin
+    password: openpaasta
+    http:    # spring boot 1.x
+      multipart:
+        enabled: true
+        max-file-size: 1024MB
+        max-request-size: 1024MB
+        location: ${java.io.tmpdir}
+    servlet:    # spring boot 2.x
+      multipart:
+        enabled: ${spring.http.multipart.enabled}
+        max-file-size: ${spring.http.multipart.max-file-size}
+        max-request-size: ${spring.http.multipart.max-request-size}
+        location: ${spring.http.multipart.location}
+<% if p("infra.admin.enable") %>
+  boot:
+    #Spring boot admin settings
+    admin:
+      routes:
+        endpoints: env,metrics,trace,info,trace,heapdump,hystrix.stream,docs
+        #Timeintervalin ms to update the status of App
+      monitor:
+        perio: 10000
+        #LifeTime of App status in ms.
+        status-lifetime: 10000
+        #Connection Timeout in ms when App's status and info
+        connect-timeout: 2000
+        #Read Timeout in ms when App's status and info
+        read-timeout: 5000
+      metadata-keys-to-sanitize: .password$,.*secret$,.*key$,.$token$,.credentials.,.*vcap_services$
+
+#INFRA_ADMIN Settings
+project:
+  name: paasta-storage-api
+  artifactId: paasta-storage-api
+  description: paasta file management service
+info:
+  app:
+    encoding: Encoding - UTF-8
+  java:
+    source: Source - java ver
+    target: Instance1 - Java ver
+  spring:
+    profiles: ${spring.profiles.active:default}
+  build:
+    name: ${project.name}
+    artifact: ${project.artifactId}
+    description: ${project.description}
+<% end %>
+management:     # If you set off security...
+  security:
+    enabled: false
+
+server:
+  port: <%= p('server.port')%>
+
+# Discovery Server Access
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: <%= p('eureka.client.serviceUrl.defaultZone')%>:<%= p('eureka.client.serviceUrl.port')%>/eureka/
+      registry-fetch-interval-seconds: 5
+  instance:
+    hostname: ${spring.cloud.client.hostname}
+    lease-expiration-duration-in-seconds: 5
+    lease-renewal-interval-in-seconds: 10
+
+
+objectStorage:
+  swift:
+    tenantName: <%= p('objectStorage.swift.tenantName')%>
+    username: <%= p('objectStorage.swift.username')%>
+    password: <%= p('objectStorage.swift.password')%>
+    authUrl: <%= p('objectStorage.swift.authUrl')%>
+    authMethod: <%= p('objectStorage.swift.authMethod')%>
+    preferredRegion: <%= p('objectStorage.swift.preferredRegion')%>
+    container: <%= p('objectStorage.swift.container')%>
+
+paasta:
+  portal:
+    storage:
+      api:
+        common:
+          countoflastestexception: 10
