@@ -4,6 +4,7 @@ set -e
 
 DATA_DIR=/var/vcap/store/srv
 
+
 if [ ! -d "$DATA_DIR" ]; then
 
   JOB_NAME=binary_storage
@@ -36,7 +37,7 @@ if [ ! -d "$DATA_DIR" ]; then
   bash $JOB_DIR/helper/swift_set_up.sh
 
   # install keystone
-  bash $JOB_DIR/helper/keystone_install/keystone_install.sh <%= p("binary_storage.proxy_ip") %>:<%= p("binary_storage.proxy_port") %>
+  bash $JOB_DIR/helper/keystone_install/keystone_install.sh <%= link('binary_storage-link').instances[0].address %>:<%= p("binary_storage.proxy_port") %>
   sleep 7
   # swift proxy setting
   sed -e 's/bind_ip = 127.0.0.1/bind_ip = 0.0.0.0/' -i /etc/swift/proxy-server.conf
@@ -49,7 +50,7 @@ if [ ! -d "$DATA_DIR" ]; then
   echo "delay_auth_decision = true" >> /etc/swift/proxy-server.conf
   echo "" >> /etc/swift/proxy-server.conf
   echo "auth_protocol = http" >> /etc/swift/proxy-server.conf
-  echo "auth_host = <%= p("binary_storage.proxy_ip") %>" >> /etc/swift/proxy-server.conf
+  echo "auth_host = <%= link('binary_storage-link').instances[0].address %>" >> /etc/swift/proxy-server.conf
   echo "auth_port = <%=p('binary_storage.auth_port')%>" >> /etc/swift/proxy-server.conf
   echo "admin_token = ADMIN" >> /etc/swift/proxy-server.conf
   echo "" >> /etc/swift/proxy-server.conf
@@ -57,7 +58,8 @@ if [ ! -d "$DATA_DIR" ]; then
   echo "admin_user = swift" >> /etc/swift/proxy-server.conf
   echo "admin_password = password" >> /etc/swift/proxy-server.conf
 
-  export PATH=$PATH:/usr/local/bin
+
+  export PATH=$PATH:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 #  sed '/602/d' -i /home/vcap/bin/remakerings
 #  sed '/603/d' -i /home/vcap/bin/remakerings
@@ -70,11 +72,11 @@ if [ ! -d "$DATA_DIR" ]; then
   sleep 5
 
 # keystone service, tenant, user create
-  export OS_AUTH_URL=http://<%= p("binary_storage.proxy_ip") %>:<%=p('binary_storage.auth_port')%>/v2.0
+  export OS_AUTH_URL=http://<%= link('binary_storage-link').instances[0].address %>:<%=p('binary_storage.auth_port')%>/v2.0
   export OS_SERVICE_TOKEN=ADMIN
   export OS_USERNAME=swift
   export OS_PASSWORD=password
-  export OS_SERVICE_ENDPOINT=http://<%= p("binary_storage.proxy_ip") %>:35357/v2.0
+  export OS_SERVICE_ENDPOINT=http://<%= link('binary_storage-link').instances[0].address %>:35357/v2.0
   export OS_TENAN_NAME=service
 
   keystone service-create --name=swift --type="object-store" --description="Swift Service"
@@ -86,7 +88,7 @@ if [ ! -d "$DATA_DIR" ]; then
   <% end %>
 
   SERVICE_ID=`keystone service-list | grep ' swift ' | awk '{print $2}'`
-  keystone endpoint-create --service-id $SERVICE_ID --publicurl "http://<%= p("binary_storage.proxy_ip") %>:<%= p("binary_storage.proxy_port") %>/v1/KEY_\$(tenant_id)s" --adminurl "http://<%= p("binary_storage.proxy_ip") %>/v1" --internalurl "http://<%= p("binary_storage.proxy_ip") %>/v1/KEY_\$(tenant_id)s" --region Public
+  keystone endpoint-create --service-id $SERVICE_ID --publicurl "http://<%= link('binary_storage-link').instances[0].address %>:<%= p("binary_storage.proxy_port") %>/v1/KEY_\$(tenant_id)s" --adminurl "http://<%= link('binary_storage-link').instances[0].address %>/v1" --internalurl "http://<%= link('binary_storage-link').instances[0].address %>/v1/KEY_\$(tenant_id)s" --region Public
 
   keystone endpoint-create --service-id $SERVICE_ID --publicurl "http://localhost:<%= p("binary_storage.proxy_port") %>/v1/KEY_\$(tenant_id)s" --adminurl "http://localhost/v1" --internalurl "http://localhost/v1/KEY_\$(tenant_id)s" --region Local
 

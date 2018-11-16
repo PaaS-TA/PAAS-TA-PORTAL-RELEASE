@@ -1,8 +1,0 @@
----
-name: paas-ta-portal-config-server
-
-dependencies: []
-
-files:
-- paas-ta-portal-config-server/paas-ta-portal-config-server.jar
-

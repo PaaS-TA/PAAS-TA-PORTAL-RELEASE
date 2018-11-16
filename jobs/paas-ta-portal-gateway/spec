@@ -11,6 +11,14 @@ templates:
 packages:
   - java
   - paas-ta-portal-gateway
+
+provides:
+  - {name: paas-ta-portal-gateway-link, type: paas-ta-portal-gateway, properties: [server.port, infra.admin.enable]}
+
+consumes:
+  - name : paas-ta-portal-registration-link
+    type : paas-ta-portal-registration
+
 properties:
   java_opts:
     description: 'Luncher Java option'
@@ -21,8 +29,3 @@ properties:
   infra.admin.enable:
     description: 'Change it to true only if an infra-admin has been created.'
     default: false
-  eureka.client.serviceUrl.defaultZone:
-    description: 'Please enter the paas-ta-portal-registration url.'
-  eureka.client.serviceUrl.port:
-    default: '2221'
-    description: 'Please enter the paas-ta-portal-registration port.'
