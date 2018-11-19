@@ -47,5 +47,5 @@ sed '/604/d' -i /home/vcap/bin/remakerings
 bash /home/vcap/bin/remakerings
 swift-init main start
 
-#iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT --to <%= p("binary_storage.proxy_ip") %>:<%= p("binary_storage.proxy_port") %>
+#iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 8080 -j DNAT --to <%= link('binary_storage-link').instances[0].address %>:<%= p("binary_storage.proxy_port") %>
 #iptables-save

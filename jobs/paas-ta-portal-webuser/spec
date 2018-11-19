@@ -13,6 +13,16 @@ templates:
   helpers/ctl_utils.sh: helpers/ctl_utils.sh
   config/httpd.conf.erb: config/httpd.conf
   config/config.json.erb: config/config.json
+
+provides:
+  - {name: paas-ta-portal-webuser-link, type: paas-ta-portal-webuser, properties: [logPath, webDir, server.port, cf.uaa.url, cf.uaa.clientsecret, monitoring, quantity, automaticApproval]}
+
+consumes:
+  - name: paas-ta-portal-gateway-link
+    type: paas-ta-portal-gateway
+  - name: paas-ta-portal-log-api-link
+    type: paas-ta-portal-log-api
+
 properties:
   logPath:
     description: 'apache log path'
@@ -23,23 +33,11 @@ properties:
   server.port:
     description: 'web port'
     default: '80'
-  gatewayserver.ip:
-    description: 'gateway server ip'
-    default: 'http://localhost'
-  gatewayserver.port:
-    description: 'gateway server port'
-    default: '2225'
   cf.uaa.url:
     description: 'uaa server address'
   cf.uaa.clientsecret:
     description: 'portalclient secret'
     default: 'clientsecret'
-  portallogapi.ip:
-    description: 'portalapi server ip'
-    default: 'http://localhost'
-  portallogapi.port:
-    description: 'portalapi server port'
-    default: '5555'
   monitoring:
     description: 'user-portal use monitoring view'
   quantity:

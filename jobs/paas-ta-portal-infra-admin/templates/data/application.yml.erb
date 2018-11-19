@@ -43,7 +43,7 @@ info:
 eureka:
   client:
     serviceUrl:
-      defaultZone: <%= p('eureka.client.serviceUrl.defaultZone')%>:<%= p('eureka.client.serviceUrl.port')%>/eureka/
+      defaultZone: <%= link('paas-ta-portal-registration-link').instances[0].address%>:<%= link('paas-ta-portal-gateway-link').p('server.port')%>/eureka/
       registry-fetch-interval-seconds: 5
   instance:
     hostname: ${spring.cloud.client.hostname}
