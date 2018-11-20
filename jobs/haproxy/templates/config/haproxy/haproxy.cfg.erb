@@ -20,57 +20,51 @@ bind *:80
 acl portalwebuser hdr_beg(host) -i portal-web-user.
 acl portalwebadmin hdr_beg(host) -i portal-web-admin.
 acl portalregistration hdr_beg(host) -i portal-registration.
-<% if p("infra.admin.enable") %>
 acl portalinfraadmin hdr_beg(host) -i portal-infra-admin.
-<% end %>
 
 use_backend http_server if portalwebuser
 use_backend webadmin_servers if portalwebadmin
-<% if p("infra.admin.enable") %>
 use_backend infraadmin_servers if portalinfraadmin
-<% end %>
 use_backend eurekaserver_server if portalregistration
 # domain in redirect setting - End
 
 backend http_server
 mode http
-server server-1 <%= link('paas-ta-portal-webuser-link').instances[0].address%>:<%= link('paas-ta-portal-webuser-link').p('server.port') %>
+server server-1 <%= p('webuser.ip') %>:<%= p('webuser.port') %>
 
 backend webadmin_servers
 mode http
-server server-1 <%= link('paas-ta-portal-webadmin-link').instances[0].address%>:<%= link('paas-ta-portal-webadmin-link').p('server.port') %>
+server server-1 <%= p('webadmin.ip') %>:<%= p('webadmin.port') %>
 
-<% if p("infra.admin.enable") %>
 backend infraadmin_servers
 mode http
-server server-1 <%= link('paas-ta-portal-infra-admin-link').instances[0].address%>:<%= link('paas-ta-portal-infra-admin-link').p('server.port') %>
-<% end %>
+server server-1 <%= p('infradmin.ip') %>:<%= p('infradmin.port') %>
 
 backend eurekaserver_server
 mode http
-server server-1 <%= link('paas-ta-portal-registration-link').instances[0].address%>:<%= link('paas-ta-portal-registration-link').p('server.port') %>
+server server-1 <%= p('eurekaserver.ip') %>:<%= p('eurekaserver.port') %>
 
 
 
 
 frontend http-in-gatewayserver
 mode http
-bind *:<%= link('paas-ta-portal-gateway-link').p('server.port') %>
+bind *:<%= p('gatewayserver.port')%>
 default_backend gatewayserver_server
 
 backend gatewayserver_server
 mode http
-server server-1 <%= link('paas-ta-portal-gateway-link').instances[0].address %>:<%= link('paas-ta-portal-gateway-link').p('server.port') %>
+server server-1 <%= p('gatewayserver.ip') %>:<%= p('gatewayserver.port') %>
 
 
 
 
 # MARIA_DB
 listen mariadb-in
-bind *:<%= link('mariadb-link').p('mariadb.port') %>
+bind *:<%= p('mariadb.port')%>
 mode tcp
-<% link("mariadb-link").instances.map do |instance| %>
-  server server-<%= instance.index %> <%= instance.address %>:<%= link('mariadb-link').p('mariadb.port') %>
+<% p('mariadb.haproxy.urls').each_with_index do |ip, index| %>
+  server server-<%= index %> <%= ip %>:<%= p('mariadb.port') %>
 <% end %>
 
 
@@ -85,19 +79,17 @@ default_backend http_server
 
 frontend http-in-webadmin
 mode http
-bind *:<%= link('paas-ta-portal-webadmin-link').p('server.port') %>
+bind *:<%= p('webadmin.port')%>
 default_backend webadmin_servers
 
-<% if p("infra.admin.enable") %>
 frontend http-in-infraadmin
 mode http
-bind *:<%= link('paas-ta-portal-infra-admin-link').p('server.port') %>
+bind *:<%= p('infradmin.port')%>
 default_backend infraadmin_servers
-<% end %>
 
 frontend http-in-eurekaserver
 mode http
-bind *:<%= link('paas-ta-portal-registration-link').p('server.port') %>
+bind *:<%= p('eurekaserver.port')%>
 default_backend eurekaserver_server
 
 

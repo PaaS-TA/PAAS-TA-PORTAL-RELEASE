@@ -13,23 +13,34 @@ packages:
   - java
   - haproxy
 
-provides:
-  - {name: haproxy-link, type: haproxy, properties: [infra.admin.enable]}
-
-consumes:
-  - name: paas-ta-portal-registration-link
-    type: paas-ta-portal-registration
-  - name: paas-ta-portal-gateway-link
-    type: paas-ta-portal-gateway
-  - name: paas-ta-portal-webuser-link
-    type: paas-ta-portal-webuser
-  - name: paas-ta-portal-webadmin-link
-    type: paas-ta-portal-webadmin
-  - name: mariadb-link
-    type: mariadb
-
-
 properties:
-  infra.admin.enable:
-    description: 'Change it to true only if an infra-admin has been created.'
-    default: false
+  infradmin.ip:
+    description: 'Ip used by haproxy on the infradmin host'
+    default: '10.30.90.53'
+  infradmin.port:
+    description: 'The port that the infraadmin host will use for haproxy'
+    default: '2227'
+  eurekaserver.ip:
+    description: 'Ip used by haproxy on the eurekaserver host'
+  eurekaserver.port:
+    default: '2221'
+    description: 'The port that the eurekaserver host will use for haproxy'
+  gatewayserver.ip:
+    description: 'Ip used by haproxy on the gatewayserver host'
+  gatewayserver.port:
+    default: '2227'
+    description: 'The port that the gatewayserver host will use for haproxy'
+  webuser.ip:
+    description: 'Ip used by haproxy on the webuser host'
+  webuser.port:
+    default: '80'
+    description: 'The port that the webuser host will use for haproxy'
+  webadmin.ip:
+    description: 'Ip used by haproxy on the webadmin host'
+  webadmin.port:
+    default: '8090'
+    description: 'The port that the webadmin host will use for haproxy'
+  mariadb.port:
+    description: 'MARIADB PORT'
+  mariadb.haproxy.urls:
+    description: 'MARIADB URLS'

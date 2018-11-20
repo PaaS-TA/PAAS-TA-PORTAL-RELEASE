@@ -52,7 +52,7 @@ datasource:
     password: <%= p('datasource.cc.password')%>
   portal:
     driver-class-name: <%= p('datasource.portal.driver-class-name')%>
-    url: jdbc:mysql://<%= link('mariadb-link').instances[0].address %>:<%=link('mariadb-link').p('mariadb.port') %>/portaldb
+    url: <%= p('datasource.portal.url')%>
     username: <%= p('datasource.portal.username')%>
     password: <%= p('datasource.portal.password')%>
   uaa:
@@ -93,9 +93,9 @@ paasta:
       authorization:
         base64: Basic YWRtaW46b3BlbnBhYXN0YQ==
       zuulUrl:
-        cfapi: http://<%= link('paas-ta-portal-gateway-link').instances[0].address %>:<%= link('paas-ta-portal-gateway-link').p('server.port') %>/portalapi
-        commonapi: http://<%= link('paas-ta-portal-gateway-link').instances[0].address %>:<%= link('paas-ta-portal-gateway-link').p('server.port') %>/commonapi
-        storageapi: http://<%= link('paas-ta-portal-gateway-link').instances[0].address %>:<%= link('paas-ta-portal-gateway-link').p('server.port') %>/storageapi
+        cfapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/portalapi
+        commonapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/commonapi
+        storageapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/storageapi
     storageapi:
       type: swift
 
@@ -104,7 +104,7 @@ paasta:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://<%= link('paas-ta-portal-registration-link').instances[0].address %>:<%= link('paas-ta-portal-registration-link').p('server.port') %>/eureka/
+      defaultZone: <%= p('eureka.client.serviceUrl.defaultZone')%>:<%= p('eureka.client.serviceUrl.port')%>/eureka/
       registry-fetch-interval-seconds: 5
   instance:
     hostname: ${spring.cloud.client.hostname}

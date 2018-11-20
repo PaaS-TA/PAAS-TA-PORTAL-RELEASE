@@ -91,10 +91,10 @@ ServerAdmin you@example.com
   ProxyPreserveHost On
 
 
-  ProxyPass /portalapi http://<%= link('paas-ta-portal-gateway-link').instances[0].address%>:<%= link('paas-ta-portal-gateway-link').p('server.port')%>/portalapi
-  ProxyPass /commonapi http://<%= link('paas-ta-portal-gateway-link').instances[0].address%>:<%= link('paas-ta-portal-gateway-link').p('server.port')%>/commonapi
-  ProxyPass /storageapi http://<%= link('paas-ta-portal-gateway-link').instances[0].address%>:<%= link('paas-ta-portal-gateway-link').p('server.port')%>/storageapi
-  ProxyPass /ws ws://<%= link('paas-ta-portal-log-api-link').instances[0].address%>:<%= link('paas-ta-portal-log-api-link').p('server.port')%>
+  ProxyPass /portalapi <%= p('gatewayserver.ip')%>:<%= p('gatewayserver.port')%>/portalapi
+  ProxyPass /commonapi <%= p('gatewayserver.ip')%>:<%= p('gatewayserver.port')%>/commonapi
+  ProxyPass /storageapi <%= p('gatewayserver.ip')%>:<%= p('gatewayserver.port')%>/storageapi
+  ProxyPass /ws <%= p('portallogapi.ip')%>:<%= p('portallogapi.port')%>
 </VirtualHost>
 
 

@@ -11,10 +11,6 @@ templates:
 packages:
   - java
   - paas-ta-portal-registration
-
-provides:
-  - {name: paas-ta-portal-registration-link, type: paas-ta-portal-registration, properties: [server.port, infra.admin.enable]}
-
 properties:
   java_opts:
     description: 'Luncher Java option'

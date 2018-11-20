@@ -5,14 +5,9 @@ stemcells:
 - alias: ((stemcell_alias))
   os: ((stemcell_os))
   version: "((stemcell_version))"
-- alias: binary_storage_stemcells
-  os: ((stemcell_os))
-  version: 3468.51 
-
-
 
 releases:
-- name: "((releases_name))"                   # 서비스 릴리즈 이름(필수) bosh releases로 확인 가능
+- name: paas-ta-portal-release                   # 서비스 릴리즈 이름(필수) bosh releases로 확인 가능
   version: "2.0"                                              # 서비스 릴리즈 버전(필수):latest 시 업로드된 서비스 릴리즈 최신버전
 
 update:
@@ -33,10 +28,31 @@ instance_groups:
   persistent_disk_type: "((mariadb_disk_type))"
   networks:
   - name: ((internal_networks_name))
+    static_ips:
+    - "((mariadb_ips))"
   templates:
   - name: mariadb
-    release: "((releases_name))" 
+    release: paas-ta-portal-release
   syslog_aggregator: null
+
+- name: binary_storage
+  azs:
+  - z6
+  instances: 1
+  persistent_disk_type: "((binary_storage_disk_type))"
+  vm_type: "((vm_type_small))"
+  stemcell: "((stemcell_alias))"
+  networks:
+  - name: ((internal_networks_name))
+    static_ips:
+    - "((binary_storage_ips))"
+  - name: ((external_networks_name))
+    static_ips: ((binary_public_ip))
+  templates:
+  - name: binary_storage
+    release: paas-ta-portal-release
+  syslog_aggregator: null
+
 
 - name: haproxy
   azs:
@@ -46,32 +62,12 @@ instance_groups:
   stemcell: "((stemcell_alias))"
   networks:
   - name: ((internal_networks_name))
-  - name: ((external_networks_name))
-    static_ips: ((haproxy_public_ip))
+    static_ips:
+    - "((haproxy_private_ip))"
   templates:
   - name: haproxy
-    release: "((releases_name))"
+    release: paas-ta-portal-release
   syslog_aggregator: null
-  properties:
-    infra:
-      admin:
-        enable: "((infra_admin))"
-
-- name: binary_storage
-  azs:
-  - z6
-  instances: 1
-  persistent_disk_type: "((binary_storage_disk_type))"
-  vm_type: "((vm_type_small))"
-  stemcell: binary_storage_stemcells
-  networks:
-  - name: ((internal_networks_name))
-  templates:
-  - name: binary_storage
-    release: "((releases_name))"
-  syslog_aggregator: null
-
-
 
 ######## WEB SERVICE ########
 
@@ -83,12 +79,18 @@ instance_groups:
   stemcell: "((stemcell_alias))"
   networks:
   - name: ((internal_networks_name))
+    static_ips:
+    - "((portal_gateway_ips))"
   templates:
   - name: paas-ta-portal-gateway
-    release: "((releases_name))"
+    release: paas-ta-portal-release
   syslog_aggregator: null
   properties:
     java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
+    eureka:
+      client:
+        serviceUrl:
+          defaultZone: http://((portal_registration_ips))
 
 - name: paas-ta-portal-registration
   azs:
@@ -98,15 +100,17 @@ instance_groups:
   stemcell: "((stemcell_alias))"
   networks:
   - name: ((internal_networks_name))
+    static_ips:
+    - "((portal_registration_ips))"
   templates:
   - name: paas-ta-portal-registration
-    release: "((releases_name))"
+    release: paas-ta-portal-release
   syslog_aggregator: null
   properties:
     java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
     infra:
       admin:
-        enable: "((infra_admin))"
+        enable: false
     server:
       port: 2221
 
@@ -118,9 +122,11 @@ instance_groups:
   stemcell: "((stemcell_alias))"
   networks:
   - name: ((internal_networks_name))
+    static_ips:
+    - "((portal_api_ips))"
   templates:
   - name: paas-ta-portal-api
-    release: "((releases_name))"
+    release: paas-ta-portal-release
   syslog_aggregator: null
   properties:
     java_opts: "-Xmx900m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
@@ -148,9 +154,60 @@ instance_groups:
     monitoring:
       api:
         url: ((monitoring_api_url))
-    infra:
-      admin:
-        enable: "((infra_admin))"
+    paasta:
+      api:
+        portal:
+          zuul:
+            url: http://((portal_gateway_ips))
+    eureka:
+      client:
+        serviceUrl:
+          defaultZone: http://((portal_registration_ips))
+
+- name: paas-ta-portal-log-api
+  azs:
+  - z6
+  instances: 1
+  vm_type: "((vm_type_small))"
+  stemcell: "((stemcell_alias))"
+  networks:
+  - name: ((internal_networks_name))
+    static_ips:
+    - "((portal_log_ips))"
+  templates:
+  - name: paas-ta-portal-log-api
+    release: paas-ta-portal-release
+  syslog_aggregator: null
+  properties:
+    java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
+    cloudfoundry:
+      cc:
+        api:
+          url: ((cf_api_url))
+          uaaUrl: ((cf_uaa_url))
+          sslSkipValidation: true
+      user: # CloudFoundry Login information
+        admin:
+          username: admin
+          password: "((cf_admin_password))"
+        uaaClient:
+          clientId: login
+          clientSecret: login-secret
+          adminClientId: admin
+          adminClientSecret: "((cf_uaa_admin_client_secret))"
+          loginClientId: login
+          loginClientSecret: login-secret
+          skipSSLValidation: true
+      authorization: cf-Authorization
+    paasta:
+      api:
+        portal:
+          zuul:
+            url: http://((portal_gateway_ips))
+    eureka:
+      client:
+        serviceUrl:
+          defaultZone: http://((portal_registration_ips))
 
 - name: paas-ta-portal-common-api
   azs:
@@ -160,9 +217,11 @@ instance_groups:
   stemcell: "((stemcell_alias))"
   networks:
   - name: ((internal_networks_name))
+    static_ips:
+    - ((portal_common_ips))
   templates:
   - name: paas-ta-portal-common-api
-    release: "((releases_name))"
+    release: paas-ta-portal-release
   syslog_aggregator: null
   properties:
     java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
@@ -174,6 +233,7 @@ instance_groups:
         password: "((cc_db_password))"
       portal:
         driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://((mariadb_ips)):((mariadb_port))/portaldb
         username: root
         password: "((mariadb_user_password))"
       uaa:
@@ -200,9 +260,15 @@ instance_groups:
           createUrl: authcreate
           expiredUrl: authreset
           inviteUrl: inviteorg
-    infra:
-      admin:
-        enable: "((infra_admin))"
+    paasta:
+      api:
+        portal:
+          zuul:
+            url: http://((portal_gateway_ips))
+    eureka:
+      client:
+        serviceUrl:
+          defaultZone: http://((portal_registration_ips))
 
 - name: paas-ta-portal-storage-api
   azs:
@@ -212,9 +278,11 @@ instance_groups:
   stemcell: "((stemcell_alias))"
   networks:
   - name: ((internal_networks_name))
+    static_ips:
+    - "((portal_storage_api_ips))"
   templates:
   - name: paas-ta-portal-storage-api
-    release: "((releases_name))"
+    release: paas-ta-portal-release
   syslog_aggregator: null
   properties:
     java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
@@ -227,46 +295,10 @@ instance_groups:
         authMethod: keystone
         preferredRegion: Public
         container: portal-container
-    infra:
-      admin:
-        enable: "((infra_admin))"
-
-- name : paas-ta-portal-log-api
-  azs:
-  - z6
-  instances: 1
-  vm_type: "((vm_type_small))"
-  stemcell: "((stemcell_alias))"
-  networks:
-  - name: ((internal_networks_name))
-  templates:
-  - name: paas-ta-portal-log-api
-    release: "((releases_name))" 
-  syslog_aggregator: null
-  properties:
-    java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
-    cloudfoundry:
-      cc:
-        api:
-          url: ((cf_api_url))
-          uaaUrl: ((cf_uaa_url))
-          sslSkipValidation: true
-      user: # CloudFoundry Login information
-        admin:
-          username: admin
-          password: "((cf_admin_password))"
-        uaaClient:
-          clientId: login
-          clientSecret: login-secret
-          adminClientId: admin
-          adminClientSecret: "((cf_uaa_admin_client_secret))"
-          loginClientId: login
-          loginClientSecret: login-secret
-          skipSSLValidation: true
-      authorization: cf-Authorization
-    infra:
-      admin:
-        enable: "((infra_admin))"
+    eureka:
+      client:
+        serviceUrl:
+          defaultZone: http://((portal_registration_ips))
 
 - name: paas-ta-portal-webadmin
   azs:
@@ -276,12 +308,23 @@ instance_groups:
   stemcell: "((stemcell_alias))"
   networks:
   - name: ((internal_networks_name))
+    static_ips:
+    - "((portal_webadmin_ips))"
   templates:
   - name: paas-ta-portal-webadmin
-    release: "((releases_name))"
+    release: paas-ta-portal-release
   syslog_aggregator: null
   properties:
     java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
+    paasta:
+      api:
+        portal:
+          zuul:
+            url: http://((portal_gateway_ips))
+    eureka:
+      client:
+        serviceUrl:
+          defaultZone: http://((portal_registration_ips))
 
 - name: paas-ta-portal-webuser
   azs:
@@ -291,11 +334,17 @@ instance_groups:
   stemcell: "((stemcell_alias))"
   networks:
   - name: ((internal_networks_name))
+    static_ips:
+    - "((portal_webuser_ips))"
   templates:
   - name: paas-ta-portal-webuser
-    release: "((releases_name))"
+    release: paas-ta-portal-release
   syslog_aggregator: null
   properties:
+    gatewayserver:
+      ip: http://((portal_gateway_ips))
+    portallogapi:
+      ip: ws://((portal_log_ips))
     logPath: "/var/vcap/sys/log/paas-ta-portal-webuser"   # WEBUSER는 아파치를 사용함, APACHE 로그 위치
     webDir: "/var/vcap/packages/apache2/htdocs"           # WEBUSER는 아파치를 사용함, APACHE 웹 디렉토리 설정
     cf:
@@ -306,18 +355,24 @@ instance_groups:
     monitoring: ((portal_webuser_monitoring))
     quantity: ((portal_webuser_quantity))
     automaticApproval: ((portal_webuser_automaticapproval))
-
-
-
+######### COMMON PROPERTIES ##########
 properties:
   mariadb:                                                # MARIA DB SERVER 설정 정보
     port: ((mariadb_port))                                            # MARIA DB PORT 번호
     admin_user:
       password: '((mariadb_user_password))'                             # MARIA DB ROOT 계정 비밀번호
+    host: ((mariadb_ips))                                     # MARIA DB IP 주소
     host_names:
     - mariadb0
+    host_ips:
+    - ((mariadb_ips))                                   # MARIA DB IP 주소
+    haproxy:                                              # Haproxy를 이용하여, 외부에서 접근하기 위해서는 설정해야함
+      urls:
+      - ((mariadb_ips))
+
   binary_storage:                                         # BINARY STORAGE SERVER 설정 정보
-    proxy_port: 10008                                     # 프록시 서버 Port(Object Storage >접속 Port)
+    proxy_ip: ((binary_storage_ips))                    # 프록시 서버 IP(swift-keystone job의 static_ip, Object Storage 접속 IP)
+    proxy_port: 10008                                     # 프록시 서버 Port(Object Storage 접속 Port)
     auth_port: 5000
     username:                                             # 최초 생성되는 유저이름(Object Storage 접속 유저이름)
     - ((binary_storage_username))
@@ -329,5 +384,17 @@ properties:
     - ((binary_storage_email))
     container:                                            # 최초 생성되는 컨테이너 이름
     - portal-container
-    binary_desc:                                          # 최초 생성되는 컨테이너에 대한 설>명
+    binary_desc:                                          # 최초 생성되는 컨테이너에 대한 설명
     - "portal binary_storage"
+
+
+  infradmin: # Haproxy를 이용하여, 외부에서 접근하기 위해서는 설정해야함
+    ip: "((portal_infra_admin_ips))"
+  eurekaserver: # Haproxy를 이용하여, 외부에서 접근하기 위해서는 설정해야함
+    ip: "((portal_registration_ips))"
+  gatewayserver: # Haproxy를 이용하여, 외부에서 접근하기 위해서는 설정해야함
+    ip: "((portal_gateway_ips))"
+  webadmin: # Haproxy를 이용하여, 외부에서 접근하기 위해서는 설정해야함
+    ip: "((portal_webadmin_ips))"
+  webuser: # Haproxy를 이용하여, 외부에서 접근하기 위해서는 설정해야함
+    ip: "((portal_webuser_ips))"

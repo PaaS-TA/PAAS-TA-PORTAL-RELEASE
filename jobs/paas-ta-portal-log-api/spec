@@ -11,16 +11,6 @@ templates:
 packages:
   - java
   - paas-ta-portal-log-api
-
-provides:
-  - {name : paas-ta-portal-log-api-link, type: paas-ta-portal-log-api, properties: [infra.admin.enable, java_opts, server.port, cloudfoundry.cc.api.url, cloudfoundry.cc.api.uaaUrl, cloudfoundry.cc.api.sslSkipValidation, cloudfoundry.user.admin.username, cloudfoundry.user.admin.password, cloudfoundry.user.uaaClient.clientId, cloudfoundry.user.uaaClient.clientSecret, cloudfoundry.user.uaaClient.adminClientId, cloudfoundry.user.uaaClient.adminClientSecret, cloudfoundry.user.uaaClient.loginClientId, cloudfoundry.user.uaaClient.loginClientSecret, cloudfoundry.user.uaaClient.skipSSLValidation, cloudfoundry.authorization]}
-
-consumes:
-  - name: paas-ta-portal-registration-link
-    type: paas-ta-portal-registration
-  - name: paas-ta-portal-gateway-link
-    type: paas-ta-portal-gateway
-
 properties:
   java_opts:
     description: 'Luncher Java option'
@@ -65,3 +55,13 @@ properties:
     default: true
   cloudfoundry.authorization:
     default: 'cf-Authorization'
+  eureka.client.serviceUrl.defaultZone:
+    description: 'Please enter the paas-ta-portal-registration url.'
+  eureka.client.serviceUrl.port:
+    default: '2221'
+    description: 'Please enter the paas-ta-portal-registration port.'
+  paasta.api.portal.zuul.url:
+    description: 'Please enter the paas-ta-portal-gatway-api url.'
+  paasta.api.portal.zuul.port:
+    default: '2225'
+    description: 'Please enter the paas-ta-portal-gatway-api port.'

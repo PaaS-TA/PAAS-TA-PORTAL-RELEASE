@@ -1,10 +1,9 @@
 #!/bin/bash
-# Binary_storage stemcell 버전은 3468.51 버전으로 사용하십시요.
+# stemcell 버전은 3468.51 버전으로 사용하십시요.
 # vsphere 인 경우 에는 use-public-network-vsphere.yml 사용하여 public ip를 설정 하고 그 이외의 IaaS는 use-public-network.yml 사용한다.
 
 bosh -e micro-bosh -d paasta-portal deploy paasta-portal-bosh2.0.yml \
    -o use-public-network-vsphere.yml \
-   -v releases_name="paasta-portal-release"\
    -v stemcell_os="ubuntu-trusty"\
    -v stemcell_version="3468.51"\
    -v stemcell_alias="default"\
@@ -13,15 +12,27 @@ bosh -e micro-bosh -d paasta-portal deploy paasta-portal-bosh2.0.yml \
    -v vm_type_medium="portal_medium"\
    -v internal_networks_name=service_private \
    -v external_networks_name=portal_service_public \
+   -v mariadb_ips="10.30.107.211"\
    -v mariadb_disk_type="10GB"\
    -v mariadb_port="3306"\
    -v mariadb_user_password="xxxxxxx"\
+   -v binary_storage_ips="10.30.107.212"\
    -v binary_storage_disk_type="10GB"\
    -v binary_storage_username="paasta-portal"\
-   -v binary_storage_password="paasta"\
+   -v binary_storage_password="xxxxxxx"\
    -v binary_storage_tenantname="paasta-portal"\
    -v binary_storage_email="paasta@paasta.com"\
-   -v haproxy_public_ip="115.68.46.216"\
+   -v haproxy_private_ip="10.30.107.213"\
+   -v haproxy_public_ip="115.68.46.214"\
+   -v portal_gateway_ips="10.30.107.214"\
+   -v portal_registration_ips="10.30.107.215"\
+   -v portal_infra_admin_ips="10.30.107.216"\
+   -v portal_api_ips="10.30.107.217"\
+   -v portal_log_ips="10.30.107.218"\
+   -v portal_common_ips="10.30.107.219"\
+   -v portal_storage_api_ips="10.30.107.220"\
+   -v portal_webadmin_ips="10.30.107.221"\
+   -v portal_webuser_ips="10.30.107.222"\
    -v cf_db_ips="10.30.112.4"\
    -v cf_db_port="5524"\
    -v cc_db_id="cloud_controller"\
@@ -31,7 +42,7 @@ bosh -e micro-bosh -d paasta-portal deploy paasta-portal-bosh2.0.yml \
    -v cf_uaa_url="https://uaa.115.68.46.189.xip.io"\
    -v cf_uaa_logouturl="logout.do"\
    -v cf_api_url="https://api.115.68.46.189.xip.io"\
-   -v cf_admin_password="xxxxxxx"\
+   -v cf_admin_password="admin_test"\
    -v cf_uaa_admin_client_secret="xxxxxxx"\
    -v portal_client_secret="xxxxxxx"\
    -v paas_ta_web_user_url="http://portal-web-user.115.68.46.214.xip.io"\
@@ -48,5 +59,4 @@ bosh -e micro-bosh -d paasta-portal deploy paasta-portal-bosh2.0.yml \
    -v mail_smtp_properties_starttls_enable="true"\
    -v mail_smtp_properties_starttls_required="true"\
    -v mail_smtp_properties_subject="PaaS-TA User Potal"\
-   -v portal_webuser_automaticapproval=false\
-   -v infra_admin=false
+   -v portal_webuser_automaticapproval=false

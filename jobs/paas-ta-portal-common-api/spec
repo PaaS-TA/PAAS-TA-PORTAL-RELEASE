@@ -11,18 +11,6 @@ templates:
 packages:
   - java
   - paas-ta-portal-common-api
-
-provides:
-  - {name: paas-ta-portal-common-api-link, type: paas-ta-portal-common-api, properties: [server.port, infra.admin.enable, datasource.cc.driver-class-name, datasource.cc.url, datasource.cc.username, datasource.cc.password, datasource.portal.driver-class-name, datasource.portal.username, datasource.portal.password, datasource.uaa.driver-class-name, datasource.uaa.url, datasource.uaa.username, datasource.uaa.password, mail.smtp.host, mail.smtp.port, mail.smtp.username, mail.smtp.password, mail.smtp.useremail, mail.smtp.properties.auth, mail.smtp.properties.starttls.enable, mail.smtp.properties.starttls.required, mail.smtp.properties.authUrl, mail.smtp.properties.charset, mail.smtp.properties.subject]}
-
-consumes:
-  - name: paas-ta-portal-registration-link
-    type: paas-ta-portal-registration
-  - name: paas-ta-portal-gateway-link
-    type: paas-ta-portal-gateway 
-  - name: mariadb-link
-    type: mariadb
-
 properties:
   java_opts:
     description: 'Luncher Java option'
@@ -43,6 +31,8 @@ properties:
     description: 'Enter the ccdb user password.'
   datasource.portal.driver-class-name:
     description: 'Enter the drive class name of portaldb.'
+  datasource.portal.url:
+    description: 'Please enter the connection address of portaldb.'
   datasource.portal.username:
     description: 'Enter the user id of portaldb.'
   datasource.portal.password:
@@ -82,3 +72,13 @@ properties:
     default: 'UTF-8'
   mail.smtp.properties.subject:
     description: 'Please enter a title to use.'
+  eureka.client.serviceUrl.defaultZone:
+    description: 'Please enter the paas-ta-portal-registration url.'
+  eureka.client.serviceUrl.port:
+    default: '2221'
+    description: 'Please enter the paas-ta-portal-registration port.'
+  paasta.api.portal.zuul.url:
+    description: 'Please enter the paas-ta-portal-gatway-api url.'
+  paasta.api.portal.zuul.port:
+    default: '2225'
+    description: 'Please enter the paas-ta-portal-gatway-api port.'

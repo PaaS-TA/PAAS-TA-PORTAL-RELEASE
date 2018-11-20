@@ -62,7 +62,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://<%= link('paas-ta-portal-registration-link').instances[0].address %>:<%= link('paas-ta-portal-registration-link').p('server.port') %>/eureka/
+      defaultZone: <%= p('eureka.client.serviceUrl.defaultZone')%>:<%= p('eureka.client.serviceUrl.port')%>/eureka/
       registry-fetch-interval-seconds: 5
   instance:
     hostname: ${spring.cloud.client.hostname}
@@ -75,7 +75,7 @@ objectStorage:
     tenantName: <%= p('objectStorage.swift.tenantName')%>
     username: <%= p('objectStorage.swift.username')%>
     password: <%= p('objectStorage.swift.password')%>
-    authUrl: http://<%= link('binary_storage-link').instances[0].address%>:5000/v2.0/tokens
+    authUrl: <%= p('objectStorage.swift.authUrl')%>
     authMethod: <%= p('objectStorage.swift.authMethod')%>
     preferredRegion: <%= p('objectStorage.swift.preferredRegion')%>
     container: <%= p('objectStorage.swift.container')%>

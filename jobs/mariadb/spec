@@ -9,9 +9,6 @@ templates:
 packages:
   - mariadb
 
-provides:
-  - {name: mariadb-link, type: mariadb, properties: [mariadb.port, mariadb.admin_user.password, inspection.jdbc_username, inspection.jdbc_password]}
-
 properties:
   mariadb.port:
     description: MariaDB server port

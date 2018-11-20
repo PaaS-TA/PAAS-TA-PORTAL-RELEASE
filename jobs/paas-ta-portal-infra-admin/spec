@@ -11,14 +11,6 @@ templates:
 packages:
   - java
   - paas-ta-portal-infra-admin
-
-provides:
-  - {name: paas-ta-portal-infra-admin-link, type: paas-ta-portal-infra-admin, properties: [java_opts, server.port]}
-
-consumes:
-  - name: paas-ta-portal-registration-link
-    type: paas-ta-portal-registration
-
 properties:
   java_opts:
     description: 'Luncher Java option'
@@ -26,3 +18,8 @@ properties:
   server.port:
     description: 'Enter the Service Port'
     default: '2227'
+  eureka.client.serviceUrl.defaultZone:
+    description: 'Please enter the paas-ta-portal-registration url.'
+  eureka.client.serviceUrl.port:
+    default: '2221'
+    description: 'Please enter the paas-ta-portal-registration port.'
