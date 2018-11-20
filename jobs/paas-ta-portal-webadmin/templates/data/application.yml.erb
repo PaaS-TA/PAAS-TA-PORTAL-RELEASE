@@ -72,21 +72,21 @@ paasta:
       authorization:
         base64: Basic YWRtaW46b3BlbnBhYXN0YQ==
       zuulUrl:
-        cfapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/portalapi
-        commonapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/commonapi
-        storageapi: <%= p('paasta.api.portal.zuul.url') %>:<%= p('paasta.api.portal.zuul.port') %>/storageapi
+        cfapi: http://<%= link('paas-ta-portal-gateway-link').instances[0].address %>:<%= link('paas-ta-portal-gateway-link').p('server.port') %>/portalapi
+        commonapi: http://<%= link('paas-ta-portal-gateway-link').instances[0].address %>:<%= link('paas-ta-portal-gateway-link').p('server.port') %>/commonapi
+        storageapi: http://<%= link('paas-ta-portal-gateway-link').instances[0].address %>:<%= link('paas-ta-portal-gateway-link').p('server.port') %>/storageapi
     storageapi:
       type: swift
 logging:
   level:
     org.openpaas.paasta.portal.web.admin.exception.GlobalControllerExceptionHandler: DEBUG
-
 eureka:
   client:
     serviceUrl:
-      defaultZone: <%= p('eureka.client.serviceUrl.defaultZone') %>:<%= p('eureka.client.serviceUrl.port') %>/eureka/
+      defaultZone: http://<%= link('paas-ta-portal-registration-link').instances[0].address %>:<%= link('paas-ta-portal-registration-link').p('server.port') %>/eureka/
       registry-fetch-interval-seconds: 5
   instance:
     hostname: ${spring.cloud.client.hostname}
     lease-expiration-duration-in-seconds: 5
     lease-renewal-interval-in-seconds: 10
+

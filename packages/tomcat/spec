@@ -1,7 +1,0 @@
----
-name: tomcat
-
-dependencies:
-
-files:
-- tomcat/apache-tomcat-8.5.15.tar.gz

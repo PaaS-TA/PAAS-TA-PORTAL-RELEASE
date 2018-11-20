@@ -12,7 +12,7 @@ rename -f 's/\.sample//' /etc/keystone/*.sample
 
 #Configuration Section
 sed -e 's/# admin_token = ADMIN/admin_token = ADMIN/' -i /etc/keystone/keystone.conf
-sed -e 's/# connection = sqlite:\/\/\/keystone.db/connection = mysql:\/\/keystone:swiftstack@<%= p("mariadb.host") %>:<%= p("mariadb.port") %>\/keystone/' -i /etc/keystone/keystone.conf
+sed -e 's/# connection = sqlite:\/\/\/keystone.db/connection = mysql:\/\/keystone:swiftstack@<%= link('mariadb-link').instances[0].address %>:<%= link('mariadb-link').p("mariadb.port") %>\/keystone/' -i /etc/keystone/keystone.conf
 sed -e 's/# driver = keystone.token.backends.sql.Token/driver = keystone.token.backends.sql.Token/g' -i /etc/keystone/keystone.conf
 sed -e 's/# provider =/provider = keystone.token.providers.uuid.Provider/g' -i /etc/keystone/keystone.conf
 sed -e 's/# public_port = 5000/public_port = <%= p("binary_storage.auth_port") %>/g' -i /etc/keystone/keystone.conf

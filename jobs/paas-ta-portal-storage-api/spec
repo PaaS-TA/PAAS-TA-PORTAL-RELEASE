@@ -11,6 +11,17 @@ templates:
 packages:
   - java
   - paas-ta-portal-storage-api
+
+provides:
+  - {name: paas-ta-portal-storage-api-link, type: paas-ta-portal-storage-api, properties: [java_opts, infra.admin.enable, server.port, objectStorage.swift.tenantName, objectStorage.swift.username, objectStorage.swift.password, objectStorage.swift.authMethod, objectStorage.swift.preferredRegion, objectStorage.swift.container]}
+
+consumes:
+  - name: paas-ta-portal-registration-link
+    type: paas-ta-portal-registration
+  - name: binary_storage-link
+    type: binary_storage
+
+
 properties:
   java_opts:
     description: 'Luncher Java option'
@@ -30,8 +41,6 @@ properties:
   objectStorage.swift.password:
     description: 'Enter the password'
     default: 'paasta'
-  objectStorage.swift.authUrl:
-    description: 'Enter the auth url'
   objectStorage.swift.authMethod:
     description: 'Enter the auth method'
     default: 'keystone'
@@ -41,8 +50,3 @@ properties:
   objectStorage.swift.container:
     description: 'Enter the container'
     default: 'portal-container'
-  eureka.client.serviceUrl.defaultZone:
-    description: 'Please enter the paas-ta-portal-registration url.'
-  eureka.client.serviceUrl.port:
-    default: '2221'
-    description: 'Please enter the paas-ta-portal-registration port.'
