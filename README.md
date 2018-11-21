@@ -1,5 +1,5 @@
 # PAAS-TA-PORTAL-RELASE
-bosh 2.0 PAAS-TA-PORTAL-RELASE
+bosh 2.0 PAAS-TA-PORTAL-RELASE - 3.5
 
 src
 ---
@@ -44,7 +44,7 @@ src <br>
 $ cd ~/
 $ git clone https://github.com/PaaS-TA/PAAS-TA-PORTAL-RELEASE.git
 $ cd ~/PAAS-TA-PORTAL-RELEASE/src
-$ mkdir mariadb
-$ cd mariadb
-$ wget 주소 수정중
+$ wget -O download.zip http://45.248.73.44/index.php/s/qkyBRkXtH2sr8Rw/download
+$ unzip hello.zip
+$ rm -rf download.zip 
 ```
