@@ -43,6 +43,7 @@ src <br>
 ```
 $ cd ~/
 $ git clone https://github.com/PaaS-TA/PAAS-TA-PORTAL-RELEASE.git
+$ git checkout v4.0
 $ cd ~/PAAS-TA-PORTAL-RELEASE
 $ mkdir src
 $ cd ./src
