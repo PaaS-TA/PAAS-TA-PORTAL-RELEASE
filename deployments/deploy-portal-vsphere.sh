@@ -3,7 +3,7 @@
 # vsphere 인 경우 에는 use-public-network-vsphere.yml 사용하여 public ip를 설정 하고 그 이외의 IaaS는 use-public-network.yml 사용한다.
 
 bosh -e micro-bosh -d paasta-portal deploy paasta-portal-bosh2.0.yml \
-   -o use-public-network-vsphere.yml \
+   -o use-public-network.yml \
    -v stemcell_os="ubuntu-trusty"\
    -v stemcell_version="3468.51"\
    -v stemcell_alias="default"\
