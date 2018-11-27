@@ -52,7 +52,6 @@ instance_groups:
   - name: haproxy
     release: "((releases_name))"
   syslog_aggregator: null
-  properties:
 
 - name: binary_storage
   azs:
