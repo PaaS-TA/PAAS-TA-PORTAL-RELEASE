@@ -104,7 +104,189 @@ instance_groups:
     server:
       port: 2221
 
+- name: paas-ta-portal-api
+  azs:
+  - z6
+  instances: 1
+  vm_type: "((vm_type_medium))"
+  stemcell: "((stemcell_alias))"
+  networks:
+  - name: ((internal_networks_name))
+  templates:
+  - name: paas-ta-portal-api
+    release: "((releases_name))"
+  syslog_aggregator: null
+  properties:
+    java_opts: "-Xmx900m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
+    cloudfoundry:
+      cc:
+        api:
+          url: ((cf_api_url))
+          uaaUrl: ((cf_uaa_url))
+          sslSkipValidation: true
+      user: # CloudFoundry Login information
+        admin:
+          username: admin
+          password: "((cf_admin_password))"
+        uaaClient:
+          clientId: admin
+          clientSecret: ((cf_uaa_admin_client_secret))
+          adminClientId: admin
+          adminClientSecret: ((cf_uaa_admin_client_secret))
+          loginClientId: admin
+          loginClientSecret: ((cf_uaa_admin_client_secret))
+          skipSSLValidation: true
+      authorization: cf-Authorization
+    abacus:
+      url: ((abacus_url))
+    monitoring:
+      api:
+        url: ((monitoring_api_url))
 
+- name: paas-ta-portal-common-api
+  azs:
+  - z6
+  instances: 1
+  vm_type: "((vm_type_small))"
+  stemcell: "((stemcell_alias))"
+  networks:
+  - name: ((internal_networks_name))
+  templates:
+  - name: paas-ta-portal-common-api
+    release: "((releases_name))"
+  syslog_aggregator: null
+  properties:
+    java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
+    datasource:
+      cc:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://((cf_db_ips)):((cf_db_port))/cloud_controller
+        username: "((cc_db_id))"
+        password: "((cc_db_password))"
+      portal:
+        driver-class-name: com.mysql.jdbc.Driver
+        username: root
+        password: "((mariadb_user_password))"
+      uaa:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://((cf_db_ips)):((cf_db_port))/uaa
+        username: "((uaa_db_id))"
+        password: "((uaa_db_password))"
+    mail:
+      smtp:
+        host: ((mail_smtp_host))
+        port: ((mail_smtp_port))
+        username: ((mail_smtp_username))
+        password: "((mail_smtp_password))"
+        useremail: ((mail_smtp_useremail))
+        properties:
+          auth: ((mail_smtp_properties_auth))
+          starttls:
+            enable: ((mail_smtp_properties_starttls_enable))
+            required: ((mail_smtp_properties_starttls_required))
+          maximumTotalQps: 90
+          authUrl: ((paas_ta_web_user_url))
+          charset: UTF-8
+          subject: "((mail_smtp_properties_subject))"
+          createUrl: authcreate
+          expiredUrl: authreset
+          inviteUrl: inviteorg
+
+- name: paas-ta-portal-storage-api
+  azs:
+  - z6
+  instances: 1
+  vm_type: "((vm_type_small))"
+  stemcell: "((stemcell_alias))"
+  networks:
+  - name: ((internal_networks_name))
+  templates:
+  - name: paas-ta-portal-storage-api
+    release: "((releases_name))"
+  syslog_aggregator: null
+  properties:
+    java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
+    objectStorage:
+      swift:
+        tenantName: ((binary_storage_tenantname))
+        username: ((binary_storage_username))
+        password: ((binary_storage_password))
+        authMethod: keystone
+        preferredRegion: Public
+        container: portal-container
+
+- name : paas-ta-portal-log-api
+  azs:
+  - z6
+  instances: 1
+  vm_type: "((vm_type_small))"
+  stemcell: "((stemcell_alias))"
+  networks:
+  - name: ((internal_networks_name))
+  templates:
+  - name: paas-ta-portal-log-api
+    release: "((releases_name))"
+  syslog_aggregator: null
+  properties:
+    java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
+    cloudfoundry:
+      cc:
+        api:
+          url: ((cf_api_url))
+          uaaUrl: ((cf_uaa_url))
+          sslSkipValidation: true
+      user: # CloudFoundry Login information
+        admin:
+          username: admin
+          password: "((cf_admin_password))"
+        uaaClient:
+          clientId: login
+          clientSecret: login-secret
+          adminClientId: admin
+          adminClientSecret: "((cf_uaa_admin_client_secret))"
+          loginClientId: login
+          loginClientSecret: login-secret
+          skipSSLValidation: true
+      authorization: cf-Authorization
+
+- name: paas-ta-portal-webadmin
+  azs:
+  - z6
+  instances: 1
+  vm_type: "((vm_type_small))"
+  stemcell: "((stemcell_alias))"
+  networks:
+  - name: ((internal_networks_name))
+  templates:
+  - name: paas-ta-portal-webadmin
+    release: "((releases_name))"
+  syslog_aggregator: null
+  properties:
+    java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
+
+- name: paas-ta-portal-webuser
+  azs:
+  - z6
+  instances: 1
+  vm_type: "((vm_type_tiny))"
+  stemcell: "((stemcell_alias))"
+  networks:
+  - name: ((internal_networks_name))
+  templates:
+  - name: paas-ta-portal-webuser
+    release: "((releases_name))"
+  syslog_aggregator: null
+  properties:
+    logPath: "/var/vcap/sys/log/paas-ta-portal-webuser"   # WEBUSER는 아파치를 사용함, APACHE 로그 위치
+    webDir: "/var/vcap/packages/apache2/htdocs"           # WEBUSER는 아파치를 사용함, APACHE 웹 디렉토리 설정
+    cf:
+      uaa:
+        url: ((cf_uaa_url))
+        clientsecret: ((portal_client_secret))
+        logouturl: ((cf_uaa_logouturl))
+    monitoring: ((portal_webuser_monitoring))
+    quantity: ((portal_webuser_quantity))
+    automaticApproval: ((portal_webuser_automaticapproval))
 
 
 

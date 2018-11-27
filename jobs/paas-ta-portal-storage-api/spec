@@ -13,7 +13,7 @@ packages:
   - paas-ta-portal-storage-api
 
 provides:
-  - {name: paas-ta-portal-storage-api-link, type: paas-ta-portal-storage-api, properties: [java_opts, infra.admin.enable, server.port, objectStorage.swift.tenantName, objectStorage.swift.username, objectStorage.swift.password, objectStorage.swift.authMethod, objectStorage.swift.preferredRegion, objectStorage.swift.container]}
+  - {name: paas-ta-portal-storage-api-link, type: paas-ta-portal-storage-api, properties: [java_opts, server.port, objectStorage.swift.tenantName, objectStorage.swift.username, objectStorage.swift.password, objectStorage.swift.authMethod, objectStorage.swift.preferredRegion, objectStorage.swift.container]}
 
 consumes:
   - name: paas-ta-portal-registration-link
