@@ -53,9 +53,6 @@ instance_groups:
     release: "((releases_name))"
   syslog_aggregator: null
   properties:
-    infra:
-      admin:
-        enable: "((infra_admin))"
 
 - name: binary_storage
   azs:
@@ -104,9 +101,6 @@ instance_groups:
   syslog_aggregator: null
   properties:
     java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
-    infra:
-      admin:
-        enable: "((infra_admin))"
     server:
       port: 2221
 
@@ -148,9 +142,6 @@ instance_groups:
     monitoring:
       api:
         url: ((monitoring_api_url))
-    infra:
-      admin:
-        enable: "((infra_admin))"
 
 - name: paas-ta-portal-common-api
   azs:
@@ -200,9 +191,6 @@ instance_groups:
           createUrl: authcreate
           expiredUrl: authreset
           inviteUrl: inviteorg
-    infra:
-      admin:
-        enable: "((infra_admin))"
 
 - name: paas-ta-portal-storage-api
   azs:
@@ -227,9 +215,6 @@ instance_groups:
         authMethod: keystone
         preferredRegion: Public
         container: portal-container
-    infra:
-      admin:
-        enable: "((infra_admin))"
 
 - name : paas-ta-portal-log-api
   azs:
@@ -264,9 +249,6 @@ instance_groups:
           loginClientSecret: login-secret
           skipSSLValidation: true
       authorization: cf-Authorization
-    infra:
-      admin:
-        enable: "((infra_admin))"
 
 - name: paas-ta-portal-webadmin
   azs:

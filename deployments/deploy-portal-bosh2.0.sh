@@ -49,4 +49,3 @@ bosh -e micro-bosh -d paasta-portal deploy paasta-portal-bosh2.0.yml \
    -v mail_smtp_properties_starttls_required="true"\
    -v mail_smtp_properties_subject="PaaS-TA User Potal"\
    -v portal_webuser_automaticapproval=false\
-   -v infra_admin=false
