@@ -211,7 +211,6 @@ instance_groups:
         tenantName: ((binary_storage_tenantname))
         username: ((binary_storage_username))
         password: ((binary_storage_password))
-        authUrl: http://((binary_storage_ips)):5000/v2.0/tokens
         authMethod: keystone
         preferredRegion: Public
         container: portal-container
