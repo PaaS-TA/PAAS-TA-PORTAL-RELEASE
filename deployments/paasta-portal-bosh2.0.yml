@@ -23,42 +23,75 @@ update:
   serial: false
 
 instance_groups:
+########## INFRA ##########
+- name: mariadb
+  azs:
+  - z6
+  instances: 1
+  vm_type: "((vm_type_small))"
+  stemcell: "((stemcell_alias))"
+  persistent_disk_type: "((mariadb_disk_type))"
+  networks:
+  - name: ((internal_networks_name))
+  templates:
+  - name: mariadb
+    release: "((releases_name))"
+  syslog_aggregator: null
 
+- name: haproxy
+  azs:
+  - z6
+  instances: 1
+  vm_type: "((vm_type_tiny))"
+  stemcell: "((stemcell_alias))"
+  networks:
+  - name: ((internal_networks_name))
+  - name: ((external_networks_name))
+    static_ips: ((haproxy_public_ip))
+  templates:
+  - name: haproxy
+    release: "((releases_name))"
+  syslog_aggregator: null
+  properties:
+
+- name: binary_storage
+  azs:
+  - z6
+  instances: 1
+  persistent_disk_type: "((binary_storage_disk_type))"
+  vm_type: "((vm_type_small))"
+  stemcell: binary_storage_stemcells
+  networks:
+  - name: ((internal_networks_name))
+  templates:
+  - name: binary_storage
+    release: "((releases_name))"
+  syslog_aggregator: null
 
 
 
 ######## WEB SERVICE ########
 
-- name: paas-ta-portal-gateway
-  azs:
-  - z6
-  instances: 1
-  vm_type: "((vm_type_small))"
-  stemcell: "((stemcell_alias))"
-  networks:
-  - name: ((internal_networks_name))
-  templates:
-  - name: paas-ta-portal-gateway
-    release: "((releases_name))"
-  syslog_aggregator: null
-  properties:
-    java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
 
-- name: paas-ta-portal-registration
-  azs:
-  - z6
-  instances: 1
-  vm_type: "((vm_type_small))"
-  stemcell: "((stemcell_alias))"
-  networks:
-  - name: ((internal_networks_name))
-  templates:
-  - name: paas-ta-portal-registration
-    release: "((releases_name))"
-  syslog_aggregator: null
-  properties:
-    java_opts: "-Xmx450m -Xss1M -XX:MaxMetaspaceSize=93382K -XX:ReservedCodeCacheSize=240m -XX:+UseCompressedOops -Djdk.tls.ephemeralDHKeySize=2048 -Dfile.encoding=UTF-8 -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Xverify:none -XX:ErrorFile=/var/vcap/sys/log/java_error_in_idea_%p.log -XX:HeapDumpPath=/var/vcap/sys/log/java_error_in_idea.hprof"
-    server:
-      port: 2221
-
-
+properties:
+  mariadb:                                                # MARIA DB SERVER 설정 정보
+    port: ((mariadb_port))                                            # MARIA DB PORT 번호
+    admin_user:
+      password: '((mariadb_user_password))'                             # MARIA DB ROOT 계정 비밀번호
+    host_names:
+    - mariadb0
+  binary_storage:                                         # BINARY STORAGE SERVER 설정 정보
+    proxy_port: 10008                                     # 프록시 서버 Port(Object Storage >접속 Port)
+    auth_port: 5000
+    username:                                             # 최초 생성되는 유저이름(Object Storage 접속 유저이름)
+    - ((binary_storage_username))
+    password:                                             # 최초 생성되는 유저 비밀번호(Object Storage 접속 유저 비밀번호)
+    - ((binary_storage_password))
+    tenantname:                                           # 최초 생성되는 테넌트 이름(Object Storage 접속 테넌트 이름)
+    - ((binary_storage_tenantname))
+    email:                                                # 최소 생성되는 유저의 이메일
+    - ((binary_storage_email))
+    container:                                            # 최초 생성되는 컨테이너 이름
+    - portal-container
+    binary_desc:                                          # 최초 생성되는 컨테이너에 대한 설>명
+    - "portal binary_storage"
