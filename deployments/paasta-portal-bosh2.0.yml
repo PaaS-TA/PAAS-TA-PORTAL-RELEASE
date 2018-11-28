@@ -184,7 +184,7 @@ instance_groups:
             enable: ((mail_smtp_properties_starttls_enable))
             required: ((mail_smtp_properties_starttls_required))
           maximumTotalQps: 90
-          authUrl: ((paas_ta_web_user_url))
+          authUrl: "http://portal-web-user.((haproxy_public_ip)).xip.io"
           charset: UTF-8
           subject: "((mail_smtp_properties_subject))"
           createUrl: authcreate
