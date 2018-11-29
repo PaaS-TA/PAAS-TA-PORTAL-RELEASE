@@ -1,9 +1,5 @@
-#!/bin/bash
-# Binary_storage stemcell 버전은 3468.51 버전으로 사용하십시요.
-# vsphere 인 경우 에는 use-public-network-vsphere.yml 사용하여 public ip를 설정 하고 그 이외의 IaaS는 use-public-network.yml 사용한다.
-
 bosh -e micro-bosh -d paasta-portal deploy paasta-portal-bosh2.0.yml \
-   -o use-public-network.yml \
+   -o use-public-network-aws.yml \
    -v releases_name="paasta-portal-release"\
    -v stemcell_os="ubuntu-trusty"\
    -v stemcell_version="3468.51"\
@@ -26,6 +22,8 @@ bosh -e micro-bosh -d paasta-portal deploy paasta-portal-bosh2.0.yml \
    -v cf_db_port="5524"\
    -v cc_db_id="cloud_controller"\
    -v cc_db_password="xxxxxxx"\
+   -v cc_driver_name="postgresql"\
+   -v uaa_driver_name="postgresql"\
    -v uaa_db_id="uaa"\
    -v uaa_db_password="xxxxxxx"\
    -v cf_uaa_url="https://uaa.115.68.46.189.xip.io"\
