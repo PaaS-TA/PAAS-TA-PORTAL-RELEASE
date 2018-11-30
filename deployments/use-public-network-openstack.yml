@@ -1,5 +1,7 @@
 ---
 
 - type: replace
-  path: /instance_groups/name=haproxy/networks/0/default?
-  value: [dns, gateway]
+  path: /instance_groups/name=haproxy/networks/name=((internal_networks_name))
+  value:
+    name: default
+    default: [dns, gateway]
