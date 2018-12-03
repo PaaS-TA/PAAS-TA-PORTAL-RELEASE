@@ -7,7 +7,7 @@ stemcells:
   version: "((stemcell_version))"
 - alias: binary_storage_stemcells
   os: ((stemcell_os))
-  version: 3468.51 
+  version: 3445.2 
 
 
 
