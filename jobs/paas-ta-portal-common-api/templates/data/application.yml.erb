@@ -48,14 +48,14 @@ datasource:
 <% if p('datasource.cc.driver-name') == "mysql" %>
   cc:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://<%= p('datasource.cc.url')%>/cloud_controller
+    url: jdbc:mysql://<%= p('datasource.cc.url')%>
     username: <%= p('datasource.cc.username')%>
     password: <%= p('datasource.cc.password')%>
 <% end %>
 <% if p('datasource.cc.driver-name') == "postgresql" %>
   cc:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://<%= p('datasource.cc.url')%>/cloud_controller
+    url: jdbc:postgresql://<%= p('datasource.cc.url')%>
     username: <%= p('datasource.cc.username')%>
     password: <%= p('datasource.cc.password')%>
 <% end %>
@@ -67,14 +67,14 @@ datasource:
 <% if p('datasource.uaa.driver-name') == "mysql" %>
   uaa:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://<%= p('datasource.uaa.url')%>/cloud_controller
+    url: jdbc:mysql://<%= p('datasource.uaa.url')%>
     username: <%= p('datasource.uaa.username')%>
     password: <%= p('datasource.uaa.password')%>
 <% end %>
 <% if p('datasource.uaa.driver-name') == "postgresql" %>
   uaa:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://<%= p('datasource.uaa.url')%>/cloud_controller
+    url: jdbc:postgresql://<%= p('datasource.uaa.url')%>
     username: <%= p('datasource.uaa.username')%>
     password: <%= p('datasource.uaa.password')%>
 <% end %>

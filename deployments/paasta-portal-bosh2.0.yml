@@ -159,7 +159,7 @@ instance_groups:
     datasource:
       cc:
         driver-name: "((cc_driver_name))"
-        url: ((cf_db_ips)):((cf_db_port))
+        url: ((cf_db_ips)):((cf_db_port))/((cc_db_id))
         username: "((cc_db_id))"
         password: "((cc_db_password))"
       portal:
@@ -167,7 +167,7 @@ instance_groups:
         password: "((mariadb_user_password))"
       uaa:
         driver-name: "((uaa_driver_name))"
-        url: ((cf_db_ips)):((cf_db_port))
+        url: ((cf_db_ips)):((cf_db_port))/((uaa_db_id))
         username: "((uaa_db_id))"
         password: "((uaa_db_password))"
     mail:
