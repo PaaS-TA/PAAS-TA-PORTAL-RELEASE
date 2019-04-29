@@ -46,5 +46,6 @@ $ git clone https://github.com/PaaS-TA/PAAS-TA-PORTAL-RELEASE.git
 $ cd ~/PAAS-TA-PORTAL-RELEASE/src
 $ mkdir mariadb
 $ cd mariadb
-$ wget 주소 수정중
+$ wget -O src.zip http://45.248.73.44/index.php/s/MLmXeMFYkAbNMPp/download
+$ unzip src.zip
 ```
