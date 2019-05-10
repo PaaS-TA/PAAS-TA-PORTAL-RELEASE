@@ -41,8 +41,8 @@ tar xvf $PKG_DIR/$JOB_NAME/$JOB_NAME.tar.gz -C $PKG_DIR/$JOB_NAME
 MAIN_JS=$(find ${WEB_FILE} -type f -name main.*.js)
 PRE_APPCONFIG="${WEB_FILE}/assets/resources/env/config.json"
 
-PRE_FILTER=$(cat ${PRE_APPCONFIG} | tr -d '{'  |tr -d '\r\n' | tr -d '"' | sed -e 's/: /:\"/g' | sed -e 's/,  /\",/g' | sed -e 's/^ *//g' -e 's/ *$//g' | sed -e 's/}/"/g' | sed -e 's/"false"/!1/g' | sed -e 's/"true"/!0/g'| sed -e 's/\//\\\//g' )
-AFTER_FILTER=$(cat ${JOB_APPCONFIG} | tr -d '{'  |tr -d '\r\n' | tr -d '"' | sed -e 's/: /:\"/g' | sed -e 's/,  /\",/g' | sed -e 's/^ *//g' -e 's/ *$//g' | sed -e 's/}/"/g' | sed -e 's/"false"/!1/g' | sed -e 's/"true"/!0/g'| sed -e 's/\//\\\//g')
+PRE_FILTER=$(cat ${PRE_APPCONFIG} |tr -d '\r\n' | tr -d '"' | sed -e 's/: /:\"/g' | sed -e 's/,  /\",/g' | sed -e 's/^ *//g' -e 's/ *$//g' | sed -e 's/"false"/!1/g' | sed -e 's/"true"/!0/g'| sed -e 's/\//\\\//g' | sed -e 's/region:"/region:/g' | sed -e 's/}"/}/g' | sed -e 's/}/"}/g' | sed -e 's/]"/\\]/g' |tr -d ' ' | sed -e 's/openidcloud/openid cloud/g' | sed -e 's/readcloud/read cloud/g' | sed -e 's/\[/\\[/g' )
+AFTER_FILTER=$(cat ${JOB_APPCONFIG} |tr -d '\r\n' | tr -d '"' | sed -e 's/: /:\"/g' | sed -e 's/,  /\",/g' | sed -e 's/^ *//g' -e 's/ *$//g' | sed -e 's/"false"/!1/g' | sed -e 's/"true"/!0/g'| sed -e 's/\//\\\//g' | sed -e 's/region:"/region:/g' | sed -e 's/}"/}/g' | sed -e 's/}/"}/g' | sed -e 's/]"/\\]/g' | tr -d ' ' | sed -e 's/openidcloud/openid cloud/g' | sed -e 's/readcloud/read cloud/g' | sed -e 's/\[/\\[/g' )
 
 CONFIG_CHANGE="'s/${PRE_FILTER}/${AFTER_FILTER}/g' ${MAIN_JS}"
 
