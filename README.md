@@ -46,6 +46,6 @@ $ git clone https://github.com/PaaS-TA/PAAS-TA-PORTAL-RELEASE.git
 $ cd ~/PAAS-TA-PORTAL-RELEASE
 $ mkdir src
 $ cd src
-$ wget -O src.zip http://45.248.73.44/index.php/s/MLmXeMFYkAbNMPp/download
+$ wget -O src.zip http://45.248.73.44/index.php/s/pa2TQF4EaFko27T/download
 $ unzip src.zip
 ```
