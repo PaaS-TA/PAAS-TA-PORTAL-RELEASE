@@ -45,21 +45,39 @@ server:
 
 
 datasource:
+<% if p('datasource.cc.driver-name') == "mysql" %>
   cc:
-    driver-class-name: <%= p('datasource.cc.driver-class-name')%>
-    url: <%= p('datasource.cc.url')%>
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://<%= p('datasource.cc.url')%>
     username: <%= p('datasource.cc.username')%>
     password: <%= p('datasource.cc.password')%>
+<% end %>
+<% if p('datasource.cc.driver-name') == "postgresql" %>
+  cc:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://<%= p('datasource.cc.url')%>
+    username: <%= p('datasource.cc.username')%>
+    password: <%= p('datasource.cc.password')%>
+<% end %>
   portal:
-    driver-class-name: <%= p('datasource.portal.driver-class-name')%>
+    driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://<%= link('mariadb-link').instances[0].address %>:<%=link('mariadb-link').p('mariadb.port') %>/portaldb
     username: <%= p('datasource.portal.username')%>
     password: <%= p('datasource.portal.password')%>
+<% if p('datasource.uaa.driver-name') == "mysql" %>
   uaa:
-    driver-class-name: <%= p('datasource.uaa.driver-class-name')%>
-    url: <%= p('datasource.uaa.url')%>
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://<%= p('datasource.uaa.url')%>
     username: <%= p('datasource.uaa.username')%>
     password: <%= p('datasource.uaa.password')%>
+<% end %>
+<% if p('datasource.uaa.driver-name') == "postgresql" %>
+  uaa:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://<%= p('datasource.uaa.url')%>
+    username: <%= p('datasource.uaa.username')%>
+    password: <%= p('datasource.uaa.password')%>
+<% end %>
 jpa:
   database: postgresql
   show-sql: true

@@ -13,7 +13,7 @@ packages:
   - paas-ta-portal-registration
 
 provides:
-  - {name: paas-ta-portal-registration-link, type: paas-ta-portal-registration, properties: [server.port, infra.admin.enable]}
+  - {name: paas-ta-portal-registration-link, type: paas-ta-portal-registration, properties: [server.port]}
 
 properties:
   java_opts:

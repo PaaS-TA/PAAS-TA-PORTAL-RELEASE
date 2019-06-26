@@ -13,7 +13,7 @@ packages:
   - paas-ta-portal-webadmin
 
 provides:
-  - {name: paas-ta-portal-webadmin-link, type: paas-ta-portal-webadmin, properties: [java_opts, infra.admin.enable, server.port]}
+  - {name: paas-ta-portal-webadmin-link, type: paas-ta-portal-webadmin, properties: [java_opts, server.port]}
 
 consumes:
   - name: paas-ta-portal-registration-link

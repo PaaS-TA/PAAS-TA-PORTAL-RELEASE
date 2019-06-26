@@ -14,7 +14,7 @@ packages:
   - haproxy
 
 provides:
-  - {name: haproxy-link, type: haproxy, properties: [infra.admin.enable]}
+  - {name: haproxy-link, type: haproxy, properties: []}
 
 consumes:
   - name: paas-ta-portal-registration-link

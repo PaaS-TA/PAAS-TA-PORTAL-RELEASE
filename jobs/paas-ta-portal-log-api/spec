@@ -13,7 +13,7 @@ packages:
   - paas-ta-portal-log-api
 
 provides:
-  - {name : paas-ta-portal-log-api-link, type: paas-ta-portal-log-api, properties: [infra.admin.enable, java_opts, server.port, cloudfoundry.cc.api.url, cloudfoundry.cc.api.uaaUrl, cloudfoundry.cc.api.sslSkipValidation, cloudfoundry.user.admin.username, cloudfoundry.user.admin.password, cloudfoundry.user.uaaClient.clientId, cloudfoundry.user.uaaClient.clientSecret, cloudfoundry.user.uaaClient.adminClientId, cloudfoundry.user.uaaClient.adminClientSecret, cloudfoundry.user.uaaClient.loginClientId, cloudfoundry.user.uaaClient.loginClientSecret, cloudfoundry.user.uaaClient.skipSSLValidation, cloudfoundry.authorization]}
+  - {name : paas-ta-portal-log-api-link, type: paas-ta-portal-log-api, properties: [java_opts, server.port, cloudfoundry.cc.api.url, cloudfoundry.cc.api.uaaUrl, cloudfoundry.cc.api.sslSkipValidation, cloudfoundry.user.admin.username, cloudfoundry.user.admin.password, cloudfoundry.user.uaaClient.clientId, cloudfoundry.user.uaaClient.clientSecret, cloudfoundry.user.uaaClient.adminClientId, cloudfoundry.user.uaaClient.adminClientSecret, cloudfoundry.user.uaaClient.loginClientId, cloudfoundry.user.uaaClient.loginClientSecret, cloudfoundry.user.uaaClient.skipSSLValidation, cloudfoundry.authorization]}
 
 consumes:
   - name: paas-ta-portal-registration-link

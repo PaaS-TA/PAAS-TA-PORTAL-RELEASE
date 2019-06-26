@@ -10,7 +10,7 @@ JAVA_DIR="/var/vcap/packages/java"
 
 export JOB_NAME
 source /var/vcap/jobs/${JOB_NAME}/helpers/ctl_setup.sh $JOB_NAME
-
+bash /var/vcap/jobs/${JOB_NAME}/helpers/ctl_host.sh
 export JOB_DIR
 export PKG_DIR
 export JAVA_DIR

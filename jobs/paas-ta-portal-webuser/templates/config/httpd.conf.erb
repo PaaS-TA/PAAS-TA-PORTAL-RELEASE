@@ -94,7 +94,7 @@ ServerAdmin you@example.com
   ProxyPass /portalapi http://<%= link('paas-ta-portal-gateway-link').instances[0].address%>:<%= link('paas-ta-portal-gateway-link').p('server.port')%>/portalapi
   ProxyPass /commonapi http://<%= link('paas-ta-portal-gateway-link').instances[0].address%>:<%= link('paas-ta-portal-gateway-link').p('server.port')%>/commonapi
   ProxyPass /storageapi http://<%= link('paas-ta-portal-gateway-link').instances[0].address%>:<%= link('paas-ta-portal-gateway-link').p('server.port')%>/storageapi
-  ProxyPass /ws ws://<%= link('paas-ta-portal-log-api-link').instances[0].address%>:<%= link('paas-ta-portal-log-api-link').p('server.port')%>
+  ProxyPass /ws ws://<%= link('paas-ta-portal-log-api-link').instances[0].address%>:5555
 </VirtualHost>
 
 

@@ -13,7 +13,7 @@ packages:
   - paas-ta-portal-common-api
 
 provides:
-  - {name: paas-ta-portal-common-api-link, type: paas-ta-portal-common-api, properties: [server.port, infra.admin.enable, datasource.cc.driver-class-name, datasource.cc.url, datasource.cc.username, datasource.cc.password, datasource.portal.driver-class-name, datasource.portal.username, datasource.portal.password, datasource.uaa.driver-class-name, datasource.uaa.url, datasource.uaa.username, datasource.uaa.password, mail.smtp.host, mail.smtp.port, mail.smtp.username, mail.smtp.password, mail.smtp.useremail, mail.smtp.properties.auth, mail.smtp.properties.starttls.enable, mail.smtp.properties.starttls.required, mail.smtp.properties.authUrl, mail.smtp.properties.charset, mail.smtp.properties.subject]}
+  - {name: paas-ta-portal-common-api-link, type: paas-ta-portal-common-api, properties: [server.port, datasource.cc.driver-name, datasource.cc.url, datasource.cc.username, datasource.cc.password,  datasource.portal.username, datasource.portal.password, datasource.uaa.driver-name, datasource.uaa.url, datasource.uaa.username, datasource.uaa.password, mail.smtp.host, mail.smtp.port, mail.smtp.username, mail.smtp.password, mail.smtp.useremail, mail.smtp.properties.auth, mail.smtp.properties.starttls.enable, mail.smtp.properties.starttls.required, mail.smtp.properties.authUrl, mail.smtp.properties.charset, mail.smtp.properties.subject]}
 
 consumes:
   - name: paas-ta-portal-registration-link
@@ -33,7 +33,7 @@ properties:
   infra.admin.enable:
     description: 'Change it to true only if an infra-admin has been created.'
     default: false
-  datasource.cc.driver-class-name:
+  datasource.cc.driver-name:
     description: 'Enter the drive class name of ccdb.'
   datasource.cc.url:
     description: 'Please enter the connection address of ccdb.'
@@ -41,13 +41,11 @@ properties:
     description: 'Enter the user id of ccdb.'
   datasource.cc.password:
     description: 'Enter the ccdb user password.'
-  datasource.portal.driver-class-name:
-    description: 'Enter the drive class name of portaldb.'
   datasource.portal.username:
     description: 'Enter the user id of portaldb.'
   datasource.portal.password:
     description: 'Enter the portaldb user password.'
-  datasource.uaa.driver-class-name:
+  datasource.uaa.driver-name:
     description: 'Enter the drive class name of uaadb.'
   datasource.uaa.url:
     description: 'Please enter the connection address of uaadbb.'

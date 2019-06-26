@@ -8,6 +8,7 @@ templates:
   data/application.yml.erb: data/application.yml
   helpers/ctl_setup.sh: helpers/ctl_setup.sh
   helpers/ctl_utils.sh: helpers/ctl_utils.sh
+  helpers/ctl_host.sh: helpers/ctl_host.sh
 packages:
   - java
   - paas-ta-portal-api

@@ -13,7 +13,7 @@ packages:
   - paas-ta-portal-gateway
 
 provides:
-  - {name: paas-ta-portal-gateway-link, type: paas-ta-portal-gateway, properties: [server.port, infra.admin.enable]}
+  - {name: paas-ta-portal-gateway-link, type: paas-ta-portal-gateway, properties: [server.port]}
 
 consumes:
   - name : paas-ta-portal-registration-link
