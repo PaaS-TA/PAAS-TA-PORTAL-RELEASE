@@ -8,6 +8,7 @@ templates:
   helper/install_deb.sh.erb: helper/install_deb.sh
   helper/swift_set_up.sh.erb: helper/swift_set_up.sh
   helper/monit_debugger: helper/monit_debugger
+  helper/keystone_start: helper/keystone_start
 
   config/keystone_install/keystone_install.sh.erb: helper/keystone_install/keystone_install.sh
   config/keystone_install/config_admin_port: helper/keystone_install/config_admin_port

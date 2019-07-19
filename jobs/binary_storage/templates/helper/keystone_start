@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -e
+
+# KEYSTONE process check & kill
+export KEYSTONE_PID
+pidfile=/var/vcap/store/log/keystone/keystone.pid
+
+if [ -f "$pidfile" ]; then
+  head -n 1 $pidfile
+  KEYSTONE_PID=$(head -n 1 $pidfile)
+fi
+
+if [ ! -z $KEYSTONE_PID ] && [ -e /proc/$KEYSTONE_PID ]; then
+    echo "keystone is running, so Killing [$KEYSTONE_PID] on $pidfile "
+  
+    kill -9 $KEYSTONE_PID
+
+    echo "killed precess [$KEYSTONE_PID] "
+
+else
+  KEYSTONE_PID=$(ps -ef | grep keystone-all | awk '{print $2 " " $8}' | grep python | awk '{print $1}')
+  echo "ps -ef | grep keystone-all  KEYSTONE_PID [$KEYSTONE_PID]"
+
+  if [ ! -z $KEYSTONE_PID -a  $KEYSTONE_PID -gt 1 ]; then
+    #ps aux | grep keystone-all | awk '{print $2}' > $pidfile
+
+    kill -9 $KEYSTONE_PID
+
+    echo "killed precess [$KEYSTONE_PID] "
+  fi
+fi
+
+if [ -f "$pidfile" ]; then
+  rm $pidfile
+fi
+
+#nohup su -s /bin/sh -c "exec keystone-all" keystone > /var/vcap/sys/log/binary_storage/keystone_start.log
+nohup keystone-all 1>/var/vcap/sys/log/binary_storage/keystone_start.log 2>&1 &
+
+#ps aux | grep keystone-all | awk '{print $2}' > $pidfile
+ps -ef | grep keystone-all | awk '{print $2 " " $8}' | grep python | awk '{print $1}' > $pidfile
+
+echo "keystone is started "
+
+

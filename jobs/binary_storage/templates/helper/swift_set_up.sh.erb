@@ -2,7 +2,7 @@
 
 set -e
 
-mkdir /var/vcap/store/srv
+mkdir -p /var/vcap/store/srv
 mkdir -p /var/vcap/store/srv/1/node/sdb1 
 #/var/vcap/store/srv/2/node/sdb2 /var/vcap/store/srv/3/node/sdb3 /var/vcap/store/srv/4/node/sdb4 /var/run/swift
 
@@ -17,14 +17,15 @@ mkdir -p /var/cache/swift
 chown -R vcap:vcap /var/cache/swift*
 mkdir -p /var/run/swift
 chown -R vcap:vcap /var/run/swift
-mkdir /var/log/swift
+mkdir -p /var/log/swift
 chown -R vcap:vcap /var/log/swift
 
 cp /var/vcap/packages/swift-all-in-one/swift-2.2.0/doc/saio/rsyncd.conf /etc/
 sed -i "s/<your-user-name>/vcap/" /etc/rsyncd.conf
 for x in {1..1}; do find /etc/rsyncd.conf | xargs sudo sed -i "s/\/srv\/$x\/node/\/var\/vcap\/store\/srv\/$x\/node/"; done
 sed -i "s/RSYNC_ENABLE=false/RSYNC_ENABLE=true/" /etc/default/rsync
-service rsync restart
+#service rsync restart
+/etc/init.d/rsync restart
 sleep 10
 
 

@@ -36,7 +36,9 @@ chown -R keystone:keystone /var/vcap/store/log/keystone
 cd $KEYSTONE_CONF_DIR ; cp keystone-init.d /etc/init.d/keystone ; cp keystone.conf-init /etc/init/keystone.conf
 
 # service start script
-service keystone restart
+#service keystone restart
+chmod +x /var/vcap/jobs/binary_storage/helper/keystone_start
+bash /var/vcap/jobs/binary_storage/helper/keystone_start
 sleep 3
 
 ################################################
@@ -69,23 +71,50 @@ echo "===================================ENV VAR============================"
 #
 # Default tenant
 #
+DEMO_TENANT=$(keystone tenant-list | grep demo | awk '{print $2}')
+if [ -z $DEMO_TENANT ]; then
+
 DEMO_TENANT=$(get_id keystone tenant-create --name=demo \
                                             --description "Default Tenant")
+else
+	echo "keystone tenant demo exists"
+fi
+
+ADMIN_USER=$(keystone user-list | grep admin | awk '{print $2}')
+if [ -z $ADMIN_USER ]; then
 
 ADMIN_USER=$(get_id keystone user-create --name=admin \
                                          --pass=secret)
+else
+	echo "keystone user admin exists"
+fi
+
+ADMIN_ROLE=$(keystone role-list | grep admin | awk '{print $2}')
+if [ -z $ADMIN_ROLE ]; then
 
 ADMIN_ROLE=$(get_id keystone role-create --name=admin)
 
 keystone user-role-add --user-id $ADMIN_USER \
                        --role-id $ADMIN_ROLE \
                        --tenant-id $DEMO_TENANT
+else
+	echo "keystone role admin exists"
+fi
 
 #
 # Service tenant
 #
+SERVICE_TENANTT=$(keystone tenant-list | grep service | awk '{print $2}')
+if [ -z $SERVICE_TENANT ]; then
+
 SERVICE_TENANT=$(get_id keystone tenant-create --name=service \
                                                --description "Service Tenant")
+else
+	echo "kestone tenant service exists"
+fi
+
+SWIFT_USERT=$(keystone user-list | grep swift | awk '{print $2}')
+if [ -z $SWIFT_USER ]; then
 
 SWIFT_USER=$(get_id keystone user-create --name=swift \
                                          --pass=password \
@@ -94,20 +123,32 @@ SWIFT_USER=$(get_id keystone user-create --name=swift \
 keystone user-role-add --user-id $SWIFT_USER \
                        --role-id $ADMIN_ROLE \
                        --tenant-id $SERVICE_TENANT
-
+else
+	echo "keystone user swift exists"
+fi
 
 #
 # Keystone service
 #
+KEYSOTNE_SERVICE=$(keystone service-list | grep keystone | awk '{print $2}')
+if [ -z $KEYSTONE_SERVICE ]; then
+
 KEYSTONE_SERVICE=$(get_id \
 keystone service-create --name=keystone \
                         --type=identity \
                         --description="Keystone Identity Service")
+else
+	echo "keystone service keystone exists"
+fi
+
+DISABLE_ENDPOINTS=$(keystone endpoint-list | grep ' RegionOne ' | awk '{print $2}')
 if [[ -z "$DISABLE_ENDPOINTS" ]]; then
     keystone endpoint-create --region RegionOne --service-id $KEYSTONE_SERVICE \
         --publicurl "http://$CONTROLLER_PUBLIC_ADDRESS:$CONFIG_PUBLIC_PORT/v2.0" \
         --adminurl "http://$CONTROLLER_ADMIN_ADDRESS:$CONFIG_ADMIN_PORT/v2.0" \
         --internalurl "http://$CONTROLLER_INTERNAL_ADDRESS:$CONFIG_PUBLIC_PORT/v2.0"
+else
+	echo "keystone endpoint RegionOne exists"
 fi
 
 #

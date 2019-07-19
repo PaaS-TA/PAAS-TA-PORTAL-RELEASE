@@ -5,7 +5,7 @@ set -e
 DATA_DIR=/var/vcap/store/srv
 
 
-if [ ! -d "$DATA_DIR" ]; then
+#if [ ! -d "$DATA_DIR" ]; then
 
   JOB_NAME=binary_storage
   JOB_DIR=/var/vcap/jobs/$JOB_NAME
@@ -68,7 +68,8 @@ if [ ! -d "$DATA_DIR" ]; then
 #  bash /home/vcap/bin/remakerings
 #  sleep 5
   swift-init main restart
-  service keystone restart
+# service keystone restart
+  bash /var/vcap/jobs/binary_storage/helper/keystone_start 
   sleep 5
 
 # keystone service, tenant, user create
@@ -79,21 +80,39 @@ if [ ! -d "$DATA_DIR" ]; then
   export OS_SERVICE_ENDPOINT=http://<%= link('binary_storage-link').instances[0].address %>:35357/v2.0
   export OS_TENAN_NAME=service
 
+  SERVICE_SWIFT=$(keystone service-list | grep swift | awk '{print $2}')
+  if [ -z $SERVICE_SWIFT ]; then
   keystone service-create --name=swift --type="object-store" --description="Swift Service"
+  else
+	echo "keystone service swift exists"
+  fi
 
   <% p('binary_storage.tenantname').each_with_index do | tenantname, index| %>
+  TENANT_PORTAL=$(keystone tenant-list | grep <%= tenantname %> | awk '{print $2}')
+  if [ -z $TENANT_PORTAL ]; then
   keystone tenant-create --name <%= tenantname %> --description "<%= p("binary_storage.binary_desc")[index]%>" --enabled true
   keystone user-create --name <%= p("binary_storage.username")[index]%> --pass <%= p("binary_storage.password")[index]%> --tenant-id <%= tenantname %> --email <%= p("binary_storage.email")[index]%> --enabled true
-
+  else
+	echo "keystone tenant <%= tenantname %> exists"
+  fi 
   <% end %>
 
   SERVICE_ID=`keystone service-list | grep ' swift ' | awk '{print $2}'`
+  ENDPOINT_PUBLIC=$(keystone endpoint-list | grep $SERVICE_ID | grep Public | awk '{print $6}')
+  ENDPOINT_LOCAL=$(keystone endpoint-list | grep $SERVICE_ID | grep Local | awk '{print $6}')
+  if [ -z $ENDPOINT_PUBLIC ]; then
   keystone endpoint-create --service-id $SERVICE_ID --publicurl "http://<%= link('binary_storage-link').instances[0].address %>:<%= p("binary_storage.proxy_port") %>/v1/KEY_\$(tenant_id)s" --adminurl "http://<%= link('binary_storage-link').instances[0].address %>/v1" --internalurl "http://<%= link('binary_storage-link').instances[0].address %>/v1/KEY_\$(tenant_id)s" --region Public
+  else
+	echo "keystone endpoint swift public --service-id=$SERVICE_ID= url=$ENDPOINT_PUBLIC="
+  fi
 
+  if [ -z $ENDPOINT_LOCAL ]; then
   keystone endpoint-create --service-id $SERVICE_ID --publicurl "http://localhost:<%= p("binary_storage.proxy_port") %>/v1/KEY_\$(tenant_id)s" --adminurl "http://localhost/v1" --internalurl "http://localhost/v1/KEY_\$(tenant_id)s" --region Local
-
+  else
+	echo "keystone endpoint swift local --service-id=$SERVICE_ID= url=$ENDPOINT_LOCAL="
+  fi
 
   swift-init main stop
   sleep 3
 
-fi
+#fi
