@@ -47,7 +47,7 @@ $ git checkout v4.0
 $ cd ~/PAAS-TA-PORTAL-RELEASE
 $ mkdir src
 $ cd ./src
-$ wget -O download.zip http://45.248.73.44/index.php/s/qkyBRkXtH2sr8Rw/download
+$ wget -O download.zip http://45.248.73.44/index.php/s/JAQRFctz7Tn26qK/download
 $ unzip download.zip
 $ rm -rf download.zip 
 ```
