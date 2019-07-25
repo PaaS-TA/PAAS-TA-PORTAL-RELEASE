@@ -30,4 +30,4 @@ properties:
     default: false
   server.port:
     description: 'Enter the Service Port'
-    default: '8090'
+    default: '8099'

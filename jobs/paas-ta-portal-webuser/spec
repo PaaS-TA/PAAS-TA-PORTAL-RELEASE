@@ -32,7 +32,7 @@ properties:
     default: '/var/vcap/packages/apache2/htdocs'
   server.port:
     description: 'web port'
-    default: '80'
+    default: '8088'
   cf.uaa.url:
     description: 'uaa server address'
   cf.uaa.clientsecret:
