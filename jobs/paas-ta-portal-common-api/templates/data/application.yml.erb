@@ -48,7 +48,7 @@ datasource:
 <% if p('datasource.cc.driver-name') == "mysql" %>
   cc:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://<%= p('datasource.cc.url')%>
+    url: jdbc:mysql://<%= p('datasource.cc.url')%>/cloud_controller
     username: <%= p('datasource.cc.username')%>
     password: <%= p('datasource.cc.password')%>
 <% end %>
@@ -67,7 +67,7 @@ datasource:
 <% if p('datasource.uaa.driver-name') == "mysql" %>
   uaa:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://<%= p('datasource.uaa.url')%>
+    url: jdbc:mysql://<%= p('datasource.uaa.url')%>/uaa
     username: <%= p('datasource.uaa.username')%>
     password: <%= p('datasource.uaa.password')%>
 <% end %>
